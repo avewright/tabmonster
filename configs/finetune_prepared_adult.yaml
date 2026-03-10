@@ -1,0 +1,65 @@
+# Fine-tune on the pre-processed Adult Census Income dataset that was built by
+# the repository's own data pipeline (src/tabula/data/prep.py → datasets.py).
+#
+# Unlike finetune_adult.yaml (which points at hand-placed CSV files and uses the
+# legacy _encode_frame path), this config uses:
+#   data.dataset_type: prepared
+#   data.prepared_dir: <path to processed directory>
+#
+# The schema.json in that directory drives feature encoding (numeric fill,
+# standardisation, categorical label encoding, target mapping, etc.) so you do
+# not need to spell out column names here — they are read from the schema.
+#
+# Prerequisites:
+#   python -m tabula.cli prep adult_census_income   # or equivalent kaggle download
+#
+# Usage:
+#   python -m tabula.cli train configs/finetune_prepared_adult.yaml
+
+experiment_name: finetune_prepared_adult
+seed: 42
+
+task:
+  mode: finetune
+  problem_type: binary
+  target_column: income          # matches schema.json → target.column
+
+data:
+  dataset_type: prepared
+  prepared_dir: data/processed/adult_census_income
+  train_path: data/processed/adult_census_income/train.csv
+  val_path:   data/processed/adult_census_income/val.csv
+  # Column lists are intentionally omitted: the schema drives feature selection.
+  batch_size: 256
+  num_workers: 0
+  standardize_numeric: true
+
+model:
+  d_model: 192
+  n_heads: 6
+  n_layers: 6
+  d_ff: 384
+  dropout: 0.1
+  feature_token_dropout: 0.05
+  norm: rmsnorm
+  ffn_activation: swiglu
+  max_categories: 128
+  numeric_embedding: linear
+
+training:
+  device: cpu
+  max_epochs: 20
+  lr: 0.0003
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  log_interval: 20
+  early_stopping_patience: 5
+
+# Episode mode is off by default so this config produces a supervised baseline
+# directly comparable to the legacy finetune_adult.yaml results.
+# Set episode.enabled: true to switch to EpisodicTabularTransformer.
+episode:
+  enabled: false
+  support_size: 128
+  query_size: 128
+  sample_with_replacement: false

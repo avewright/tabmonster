@@ -1,0 +1,559 @@
+{
+  "target": {
+    "column": "workclass",
+    "problem_type": "multiclass",
+    "classes": [
+      "?",
+      "Federal-gov",
+      "Local-gov",
+      "Never-worked",
+      "Private",
+      "Self-emp-inc",
+      "Self-emp-not-inc",
+      "State-gov",
+      "Without-pay"
+    ]
+  },
+  "numeric_features": [
+    {
+      "name": "age",
+      "fill_value": 37.0,
+      "mean": 38.80402930402931,
+      "std": 13.496937956146182,
+      "profile": {
+        "name": "age",
+        "name_tokens": [
+          "age",
+          "",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.040293040293040296,
+        "top_frequency_ratio": 0.03296703296703297,
+        "avg_string_length": 2.0,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.7130871155155217,
+          "categorical": 0.1269451788060599,
+          "text": 0.07353290379774889,
+          "identifier": 0.04321740094033466,
+          "datetime": 0.04321740094033466
+        }
+      }
+    },
+    {
+      "name": "capital_gain",
+      "fill_value": 0.0,
+      "mean": 956.7197802197802,
+      "std": 6526.367072971885,
+      "profile": {
+        "name": "capital_gain",
+        "name_tokens": [
+          "capital",
+          "gain",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.03235653235653236,
+        "top_frequency_ratio": 0.9188034188034188,
+        "avg_string_length": 3.2667887667887667,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.7025081779936916,
+          "categorical": 0.12810305636674843,
+          "text": 0.0842362592160823,
+          "identifier": 0.042576253211738885,
+          "datetime": 0.042576253211738885
+        }
+      }
+    },
+    {
+      "name": "capital_loss",
+      "fill_value": 0.0,
+      "mean": 94.19047619047619,
+      "std": 415.93157322921616,
+      "profile": {
+        "name": "capital_loss",
+        "name_tokens": [
+          "capital",
+          "loss",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.021367521367521368,
+        "top_frequency_ratio": 0.9499389499389499,
+        "avg_string_length": 3.1495726495726495,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.7020702070207021,
+          "categorical": 0.13223140495867772,
+          "text": 0.08059896898780787,
+          "identifier": 0.042549709516406194,
+          "datetime": 0.042549709516406194
+        }
+      }
+    },
+    {
+      "name": "education",
+      "fill_value": 10.0,
+      "mean": 10.02930402930403,
+      "std": 2.683849563178561,
+      "profile": {
+        "name": "education",
+        "name_tokens": [
+          "education",
+          "",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.009768009768009768,
+        "top_frequency_ratio": 0.33516483516483514,
+        "avg_string_length": 1.5207570207570207,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.7130165689886466,
+          "categorical": 0.13880435771920174,
+          "text": 0.061752822505648966,
+          "identifier": 0.04321312539325132,
+          "datetime": 0.04321312539325132
+        }
+      }
+    },
+    {
+      "name": "final_weight",
+      "fill_value": 179297.5,
+      "mean": 190649.35714285713,
+      "std": 103837.51727229792,
+      "profile": {
+        "name": "final_weight",
+        "name_tokens": [
+          "final",
+          "weight",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.9719169719169719,
+        "top_frequency_ratio": 0.0018315018315018315,
+        "avg_string_length": 5.8247863247863245,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.11416361416361416,
+        "type_probabilities": {
+          "numeric": 0.5690212190785381,
+          "categorical": 0.051729201734412554,
+          "text": 0.25229302266336967,
+          "identifier": 0.04128861925981135,
+          "datetime": 0.08566793726386841
+        }
+      }
+    },
+    {
+      "name": "hours_worked_per_week",
+      "fill_value": 40.0,
+      "mean": 40.57020757020757,
+      "std": 12.574841302324591,
+      "profile": {
+        "name": "hours_worked_per_week",
+        "name_tokens": [
+          "hours",
+          "worked",
+          "per",
+          "week"
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.03663003663003663,
+        "top_frequency_ratio": 0.4468864468864469,
+        "avg_string_length": 1.9871794871794872,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.7127345224109082,
+          "categorical": 0.1283064544839617,
+          "text": 0.07256695978259581,
+          "identifier": 0.04319603166126717,
+          "datetime": 0.04319603166126717
+        }
+      }
+    },
+    {
+      "name": "over_threshold",
+      "fill_value": 0.0,
+      "mean": 0.23809523809523808,
+      "std": 0.4259177099999599,
+      "profile": {
+        "name": "over_threshold",
+        "name_tokens": [
+          "over",
+          "threshold",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.001221001221001221,
+        "top_frequency_ratio": 0.7619047619047619,
+        "avg_string_length": 1.0,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.7159868495995805,
+          "categorical": 0.14272052220123507,
+          "text": 0.05450634339923546,
+          "identifier": 0.04339314239997458,
+          "datetime": 0.04339314239997458
+        }
+      }
+    },
+    {
+      "name": "capital_gain_log1p",
+      "fill_value": 0.0,
+      "mean": 0.7139238240395404,
+      "std": 2.4178298628775003,
+      "profile": {
+        "name": "capital_gain_log1p",
+        "name_tokens": [
+          "capital",
+          "gain",
+          "log1p",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.03235653235653236,
+        "top_frequency_ratio": 0.9188034188034188,
+        "avg_string_length": 4.124542124542124,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.696152320507735,
+          "categorical": 0.12694405951050142,
+          "text": 0.09252152052628054,
+          "identifier": 0.04219104972774152,
+          "datetime": 0.04219104972774152
+        }
+      }
+    },
+    {
+      "name": "capital_loss_log1p",
+      "fill_value": 0.0,
+      "mean": 0.3767109762338364,
+      "std": 1.6415170434341102,
+      "profile": {
+        "name": "capital_loss_log1p",
+        "name_tokens": [
+          "capital",
+          "loss",
+          "log1p",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.021367521367521368,
+        "top_frequency_ratio": 0.9499389499389499,
+        "avg_string_length": 3.7020757020757022,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.6979681011507551,
+          "categorical": 0.13145879387641263,
+          "text": 0.08597091089395285,
+          "identifier": 0.042301097039439704,
+          "datetime": 0.042301097039439704
+        }
+      }
+    },
+    {
+      "name": "final_weight_log1p",
+      "fill_value": 12.096807236762768,
+      "mean": 11.986406934070096,
+      "std": 0.6391116483580724,
+      "profile": {
+        "name": "final_weight_log1p",
+        "name_tokens": [
+          "final",
+          "weight",
+          "log1p",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.9719169719169719,
+        "top_frequency_ratio": 0.0018315018315018315,
+        "avg_string_length": 17.807081807081808,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.5408309670602784,
+          "categorical": 0.0491664515509344,
+          "text": 0.33798183422681405,
+          "identifier": 0.03924311279468355,
+          "datetime": 0.0327776343672896
+        }
+      }
+    },
+    {
+      "name": "native_country_frequency",
+      "fill_value": 0.8937728937728938,
+      "mean": 0.7994475677625863,
+      "std": 0.2736208163096793,
+      "profile": {
+        "name": "native_country_frequency",
+        "name_tokens": [
+          "native",
+          "country",
+          "frequency",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.002442002442002442,
+        "top_frequency_ratio": 0.8937728937728938,
+        "avg_string_length": 16.93223443223443,
+        "parse_numeric_ratio": 1.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.6105844119902901,
+          "categorical": 0.12130358314798773,
+          "text": 0.1941017731053234,
+          "identifier": 0.03700511587819941,
+          "datetime": 0.03700511587819941
+        }
+      }
+    }
+  ],
+  "categorical_features": [
+    {
+      "name": "marital_status",
+      "categories": [
+        "Divorced",
+        "Married-civ-spouse",
+        "Married-spouse-absent",
+        "Never-married",
+        "Separated",
+        "Widowed"
+      ],
+      "unknown_index": 0,
+      "profile": {
+        "name": "marital_status",
+        "name_tokens": [
+          "marital",
+          "status",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.003663003663003663,
+        "top_frequency_ratio": 0.4542124542124542,
+        "avg_string_length": 14.351648351648352,
+        "parse_numeric_ratio": 0.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.10812166657865553,
+          "categorical": 0.41569414373976876,
+          "text": 0.3320219675767017,
+          "identifier": 0.07208111105243703,
+          "datetime": 0.07208111105243703
+        }
+      }
+    },
+    {
+      "name": "native_country",
+      "categories": [
+        "?",
+        "Mexico",
+        "United-States",
+        "__RARE__"
+      ],
+      "unknown_index": 0,
+      "profile": {
+        "name": "native_country",
+        "name_tokens": [
+          "native",
+          "country",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.002442002442002442,
+        "top_frequency_ratio": 0.8937728937728938,
+        "avg_string_length": 12.343711843711844,
+        "parse_numeric_ratio": 0.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.11213980734956172,
+          "categorical": 0.4319641809846122,
+          "text": 0.3063762685330771,
+          "identifier": 0.0747598715663745,
+          "datetime": 0.0747598715663745
+        }
+      }
+    },
+    {
+      "name": "occupation",
+      "categories": [
+        "?",
+        "Adm-clerical",
+        "Craft-repair",
+        "Exec-managerial",
+        "Farming-fishing",
+        "Handlers-cleaners",
+        "Machine-op-inspct",
+        "Other-service",
+        "Prof-specialty",
+        "Protective-serv",
+        "Sales",
+        "Tech-support",
+        "Transport-moving",
+        "__RARE__"
+      ],
+      "unknown_index": 0,
+      "profile": {
+        "name": "occupation",
+        "name_tokens": [
+          "occupation",
+          "",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.008547008547008548,
+        "top_frequency_ratio": 0.1398046398046398,
+        "avg_string_length": 12.15140415140415,
+        "parse_numeric_ratio": 0.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.11275090173187587,
+          "categorical": 0.4301880558385418,
+          "text": 0.30672650678708113,
+          "identifier": 0.07516726782125059,
+          "datetime": 0.07516726782125059
+        }
+      }
+    },
+    {
+      "name": "race",
+      "categories": [
+        "Amer-Indian-Eskimo",
+        "Asian-Pac-Islander",
+        "Black",
+        "White",
+        "__RARE__"
+      ],
+      "unknown_index": 0,
+      "profile": {
+        "name": "race",
+        "name_tokens": [
+          "race",
+          "",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.0030525030525030525,
+        "top_frequency_ratio": 0.8467643467643468,
+        "avg_string_length": 5.571428571428571,
+        "parse_numeric_ratio": 0.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.12841754255758403,
+          "categorical": 0.49419586157874656,
+          "text": 0.20616320578689062,
+          "identifier": 0.08561169503838936,
+          "datetime": 0.08561169503838936
+        }
+      }
+    },
+    {
+      "name": "relationship",
+      "categories": [
+        "Husband",
+        "Not-in-family",
+        "Other-relative",
+        "Own-child",
+        "Unmarried",
+        "Wife"
+      ],
+      "unknown_index": 0,
+      "profile": {
+        "name": "relationship",
+        "name_tokens": [
+          "relationship",
+          "",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.003663003663003663,
+        "top_frequency_ratio": 0.40293040293040294,
+        "avg_string_length": 9.218559218559218,
+        "parse_numeric_ratio": 0.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.11914229187679415,
+          "categorical": 0.4580650166808907,
+          "text": 0.2639363022732562,
+          "identifier": 0.07942819458452945,
+          "datetime": 0.07942819458452945
+        }
+      }
+    },
+    {
+      "name": "is_male",
+      "categories": [
+        "False",
+        "True"
+      ],
+      "unknown_index": 0,
+      "profile": {
+        "name": "is_male",
+        "name_tokens": [
+          "is",
+          "male",
+          "",
+          ""
+        ],
+        "missing_ratio": 0.0,
+        "unique_ratio": 0.001221001221001221,
+        "top_frequency_ratio": 0.6672771672771672,
+        "avg_string_length": 4.332722832722832,
+        "parse_numeric_ratio": 0.0,
+        "parse_datetime_ratio": 0.0,
+        "type_probabilities": {
+          "numeric": 0.13182992491006107,
+          "categorical": 0.5087765893232248,
+          "text": 0.18362025255329936,
+          "identifier": 0.0878866166067074,
+          "datetime": 0.0878866166067074
+        }
+      }
+    }
+  ],
+  "text_features": [],
+  "metadata": {
+    "profile_vector_fields": [
+      "missing_ratio",
+      "unique_ratio",
+      "top_frequency_ratio",
+      "avg_string_length",
+      "parse_numeric_ratio",
+      "parse_datetime_ratio",
+      "type_probability_numeric",
+      "type_probability_categorical",
+      "type_probability_text",
+      "type_probability_identifier",
+      "type_probability_datetime"
+    ],
+    "type_names": [
+      "numeric",
+      "categorical",
+      "text",
+      "identifier",
+      "datetime"
+    ],
+    "name_token_count": 4,
+    "text_token_count": 16
+  }
+}

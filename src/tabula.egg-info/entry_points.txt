@@ -1,0 +1,2 @@
+[console_scripts]
+tabula = tabula.cli:main

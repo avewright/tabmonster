@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tabula"
+version = "0.1.0"
+description = "Research scaffolding for training a tabular foundation model."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "datasets>=3.2",
+  "huggingface-hub>=0.28",
+  "kagglehub>=0.3.13",
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "pyarrow>=17.0",
+  "pyyaml>=6.0",
+  "requests>=2.32",
+  "scikit-learn>=1.5",
+  "torch>=2.3",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.2",
+]
+text = [
+  "transformers>=4.49",
+]
+
+[project.scripts]
+tabula = "tabula.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

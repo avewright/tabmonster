@@ -1,0 +1,24 @@
+{
+  "sleep_seconds": 0,
+  "max_cycles": 1,
+  "stale_after_seconds": 10,
+  "hf_cache_max_gb": 5.0,
+  "jobs": [
+    {
+      "prepared_dir": "data/processed/hf_adult_census_income",
+      "repo_id": "scikit-learn/adult-census-income",
+      "experiment_name": "hf_adult_cache_job",
+      "device": "cuda",
+      "steps_per_cycle": 2,
+      "max_total_steps": 2,
+      "val_interval_steps": 2,
+      "checkpoint_interval_steps": 2,
+      "batch_size": 128,
+      "max_stream_rows": 256,
+      "cache_dir": "data/hf_cache",
+      "weight": 1.0,
+      "max_retries": 1,
+      "retry_backoff_seconds": 1
+    }
+  ]
+}

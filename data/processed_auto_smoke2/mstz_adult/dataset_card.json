@@ -1,0 +1,193 @@
+{
+  "dataset_id": "mstz_adult",
+  "title": "mstz/adult",
+  "provider": "huggingface",
+  "source_type": "dataset",
+  "external_ref": "mstz/adult",
+  "source_url": "https://huggingface.co/datasets/mstz/adult",
+  "task_type": "multiclass",
+  "raw_source_path": "data\\raw_auto_smoke2\\mstz_adult\\train.csv",
+  "processed_dir": "data\\processed_auto_smoke2\\mstz_adult",
+  "original_target_column": "workclass",
+  "target_column": "workclass",
+  "train_rows": 1638,
+  "val_rows": 205,
+  "test_rows": 205,
+  "numeric_columns": [
+    "age",
+    "capital_gain",
+    "capital_loss",
+    "education",
+    "final_weight",
+    "hours_worked_per_week",
+    "over_threshold",
+    "capital_gain_log1p",
+    "capital_loss_log1p",
+    "final_weight_log1p",
+    "native_country_frequency"
+  ],
+  "categorical_columns": [
+    "marital_status",
+    "native_country",
+    "occupation",
+    "race",
+    "relationship",
+    "is_male"
+  ],
+  "text_columns": [],
+  "tabular_inspection": {
+    "scalar_columns": [
+      "age",
+      "capital_gain",
+      "capital_loss",
+      "education",
+      "final_weight",
+      "hours_worked_per_week",
+      "marital_status",
+      "native_country",
+      "occupation",
+      "race",
+      "relationship",
+      "is_male",
+      "workclass",
+      "over_threshold"
+    ],
+    "dropped_columns": {},
+    "target_source": "manifest_or_cli",
+    "target_candidates": []
+  },
+  "feature_engineering_enabled": true,
+  "feature_transforms": {
+    "version": 1,
+    "missing_indicators": [],
+    "log_transforms": [
+      {
+        "source": "capital_gain",
+        "name": "capital_gain_log1p"
+      },
+      {
+        "source": "capital_loss",
+        "name": "capital_loss_log1p"
+      },
+      {
+        "source": "final_weight",
+        "name": "final_weight_log1p"
+      }
+    ],
+    "frequency_encodings": [
+      {
+        "source": "native_country",
+        "name": "native_country_frequency",
+        "mapping": {
+          "United-States": 0.8937728937728938,
+          "Mexico": 0.02197802197802198,
+          "?": 0.0115995115995116,
+          "Canada": 0.006105006105006105,
+          "India": 0.006105006105006105,
+          "El-Salvador": 0.004884004884004884,
+          "Puerto-Rico": 0.004884004884004884,
+          "Philippines": 0.004273504273504274,
+          "Poland": 0.003663003663003663,
+          "China": 0.003663003663003663,
+          "England": 0.0030525030525030525,
+          "Germany": 0.0030525030525030525,
+          "Greece": 0.002442002442002442,
+          "Jamaica": 0.002442002442002442,
+          "Dominican-Republic": 0.002442002442002442,
+          "Portugal": 0.002442002442002442,
+          "Nicaragua": 0.0018315018315018315,
+          "Cambodia": 0.0018315018315018315,
+          "Vietnam": 0.0018315018315018315,
+          "Taiwan": 0.0018315018315018315,
+          "Japan": 0.0018315018315018315,
+          "South": 0.0018315018315018315,
+          "Guatemala": 0.0018315018315018315,
+          "Cuba": 0.0018315018315018315,
+          "Ecuador": 0.001221001221001221,
+          "Columbia": 0.001221001221001221,
+          "Iran": 0.001221001221001221,
+          "Italy": 0.001221001221001221,
+          "Haiti": 0.001221001221001221,
+          "Hong": 0.0006105006105006105,
+          "Peru": 0.0006105006105006105,
+          "Trinadad&Tobago": 0.0006105006105006105,
+          "Thailand": 0.0006105006105006105
+        },
+        "default": 0.0
+      }
+    ],
+    "rare_category_collapses": [
+      {
+        "source": "native_country",
+        "name": "native_country",
+        "keep_values": [
+          "?",
+          "Mexico",
+          "United-States"
+        ],
+        "replacement": "__RARE__",
+        "min_count": 16
+      },
+      {
+        "source": "occupation",
+        "name": "occupation",
+        "keep_values": [
+          "?",
+          "Adm-clerical",
+          "Craft-repair",
+          "Exec-managerial",
+          "Farming-fishing",
+          "Handlers-cleaners",
+          "Machine-op-inspct",
+          "Other-service",
+          "Prof-specialty",
+          "Protective-serv",
+          "Sales",
+          "Tech-support",
+          "Transport-moving"
+        ],
+        "replacement": "__RARE__",
+        "min_count": 16
+      },
+      {
+        "source": "race",
+        "name": "race",
+        "keep_values": [
+          "Amer-Indian-Eskimo",
+          "Asian-Pac-Islander",
+          "Black",
+          "White"
+        ],
+        "replacement": "__RARE__",
+        "min_count": 16
+      }
+    ]
+  },
+  "maybe_identifier_columns": [],
+  "dropped_identifier_columns": [],
+  "schema_path": "data\\processed_auto_smoke2\\mstz_adult\\schema.json",
+  "feature_transform_artifact_path": "data\\processed_auto_smoke2\\mstz_adult\\feature_transforms.json",
+  "original_to_normalized_columns": {
+    "age": "age",
+    "capital_gain": "capital_gain",
+    "capital_loss": "capital_loss",
+    "education": "education",
+    "final_weight": "final_weight",
+    "hours_worked_per_week": "hours_worked_per_week",
+    "marital_status": "marital_status",
+    "native_country": "native_country",
+    "occupation": "occupation",
+    "race": "race",
+    "relationship": "relationship",
+    "is_male": "is_male",
+    "workclass": "workclass",
+    "over_threshold": "over_threshold"
+  },
+  "notes": "Hugging Face streamed sample split=train rows=2048 config=",
+  "limitations": [
+    "This first-pass preparation only uses the main training table.",
+    "Relational side tables are not joined yet.",
+    "Identifier detection uses simple name-based heuristics.",
+    "Feature engineering uses train-only heuristics and may need per-dataset tuning."
+  ]
+}

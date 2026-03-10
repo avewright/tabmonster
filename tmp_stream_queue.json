@@ -1,0 +1,30 @@
+{
+  "sleep_seconds": 0,
+  "max_cycles": 1,
+  "jobs": [
+    {
+      "prepared_dir": "data/processed/hf_adult_census_income",
+      "repo_id": "scikit-learn/adult-census-income",
+      "experiment_name": "hf_adult_queue_job_a",
+      "device": "cuda",
+      "steps_per_cycle": 2,
+      "max_total_steps": 2,
+      "val_interval_steps": 2,
+      "checkpoint_interval_steps": 2,
+      "batch_size": 128,
+      "max_stream_rows": 512
+    },
+    {
+      "prepared_dir": "data/processed/hf_adult_census_income",
+      "repo_id": "scikit-learn/adult-census-income",
+      "experiment_name": "hf_adult_queue_job_b",
+      "device": "cuda",
+      "steps_per_cycle": 2,
+      "max_total_steps": 2,
+      "val_interval_steps": 2,
+      "checkpoint_interval_steps": 2,
+      "batch_size": 128,
+      "max_stream_rows": 512
+    }
+  ]
+}

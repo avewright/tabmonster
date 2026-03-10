@@ -1,0 +1,33 @@
+experiment_name: pretrain_synthetic
+seed: 42
+task:
+  mode: pretrain
+  problem_type: multiclass
+  target_column: target
+data:
+  dataset_type: synthetic
+  num_numeric_features: 16
+  num_categorical_features: 4
+  categorical_cardinality: 12
+  num_classes: 3
+  train_size: 4096
+  val_size: 1024
+  batch_size: 128
+  num_workers: 0
+  standardize_numeric: true
+model:
+  d_model: 192
+  n_heads: 6
+  n_layers: 6
+  d_ff: 384
+  dropout: 0.1
+  max_categories: 64
+training:
+  device: cpu
+  max_epochs: 10
+  lr: 0.0003
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  log_interval: 20
+  early_stopping_patience: 5
+

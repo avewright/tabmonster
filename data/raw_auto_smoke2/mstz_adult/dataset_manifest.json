@@ -1,0 +1,12 @@
+{
+  "id": "mstz_adult",
+  "title": "mstz/adult",
+  "provider": "huggingface",
+  "source_type": "dataset",
+  "external_ref": "mstz/adult",
+  "source_url": "https://huggingface.co/datasets/mstz/adult",
+  "task_type": "multiclass",
+  "target_column": "workclass",
+  "train_file": "train.csv",
+  "notes": "Hugging Face streamed sample split=train rows=2048 config="
+}

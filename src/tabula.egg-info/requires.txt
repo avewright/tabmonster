@@ -1,0 +1,17 @@
+datasets>=3.2
+huggingface-hub>=0.28
+kagglehub>=0.3.13
+numpy>=1.26
+pandas>=2.2
+pyarrow>=17.0
+pyyaml>=6.0
+requests>=2.32
+scikit-learn>=1.5
+torch>=2.3
+tqdm>=4.66
+
+[dev]
+pytest>=8.2
+
+[text]
+transformers>=4.49

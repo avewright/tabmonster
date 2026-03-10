@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "missing_indicators": [],
+  "log_transforms": [
+    {
+      "source": "capital_gain",
+      "name": "capital_gain_log1p"
+    },
+    {
+      "source": "capital_loss",
+      "name": "capital_loss_log1p"
+    },
+    {
+      "source": "final_weight",
+      "name": "final_weight_log1p"
+    }
+  ],
+  "frequency_encodings": [
+    {
+      "source": "native_country",
+      "name": "native_country_frequency",
+      "mapping": {
+        "United-States": 0.8937728937728938,
+        "Mexico": 0.02197802197802198,
+        "?": 0.0115995115995116,
+        "Canada": 0.006105006105006105,
+        "India": 0.006105006105006105,
+        "El-Salvador": 0.004884004884004884,
+        "Puerto-Rico": 0.004884004884004884,
+        "Philippines": 0.004273504273504274,
+        "Poland": 0.003663003663003663,
+        "China": 0.003663003663003663,
+        "England": 0.0030525030525030525,
+        "Germany": 0.0030525030525030525,
+        "Greece": 0.002442002442002442,
+        "Jamaica": 0.002442002442002442,
+        "Dominican-Republic": 0.002442002442002442,
+        "Portugal": 0.002442002442002442,
+        "Nicaragua": 0.0018315018315018315,
+        "Cambodia": 0.0018315018315018315,
+        "Vietnam": 0.0018315018315018315,
+        "Taiwan": 0.0018315018315018315,
+        "Japan": 0.0018315018315018315,
+        "South": 0.0018315018315018315,
+        "Guatemala": 0.0018315018315018315,
+        "Cuba": 0.0018315018315018315,
+        "Ecuador": 0.001221001221001221,
+        "Columbia": 0.001221001221001221,
+        "Iran": 0.001221001221001221,
+        "Italy": 0.001221001221001221,
+        "Haiti": 0.001221001221001221,
+        "Hong": 0.0006105006105006105,
+        "Peru": 0.0006105006105006105,
+        "Trinadad&Tobago": 0.0006105006105006105,
+        "Thailand": 0.0006105006105006105
+      },
+      "default": 0.0
+    }
+  ],
+  "rare_category_collapses": [
+    {
+      "source": "native_country",
+      "name": "native_country",
+      "keep_values": [
+        "?",
+        "Mexico",
+        "United-States"
+      ],
+      "replacement": "__RARE__",
+      "min_count": 16
+    },
+    {
+      "source": "occupation",
+      "name": "occupation",
+      "keep_values": [
+        "?",
+        "Adm-clerical",
+        "Craft-repair",
+        "Exec-managerial",
+        "Farming-fishing",
+        "Handlers-cleaners",
+        "Machine-op-inspct",
+        "Other-service",
+        "Prof-specialty",
+        "Protective-serv",
+        "Sales",
+        "Tech-support",
+        "Transport-moving"
+      ],
+      "replacement": "__RARE__",
+      "min_count": 16
+    },
+    {
+      "source": "race",
+      "name": "race",
+      "keep_values": [
+        "Amer-Indian-Eskimo",
+        "Asian-Pac-Islander",
+        "Black",
+        "White"
+      ],
+      "replacement": "__RARE__",
+      "min_count": 16
+    }
+  ]
+}

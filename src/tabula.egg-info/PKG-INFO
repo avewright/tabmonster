@@ -1,0 +1,115 @@
+Metadata-Version: 2.4
+Name: tabula
+Version: 0.1.0
+Summary: Research scaffolding for training a tabular foundation model.
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: datasets>=3.2
+Requires-Dist: huggingface-hub>=0.28
+Requires-Dist: kagglehub>=0.3.13
+Requires-Dist: numpy>=1.26
+Requires-Dist: pandas>=2.2
+Requires-Dist: pyarrow>=17.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: requests>=2.32
+Requires-Dist: scikit-learn>=1.5
+Requires-Dist: torch>=2.3
+Requires-Dist: tqdm>=4.66
+Provides-Extra: dev
+Requires-Dist: pytest>=8.2; extra == "dev"
+Provides-Extra: text
+Requires-Dist: transformers>=4.49; extra == "text"
+
+# Tabula
+
+`tabula` is a training scaffold for a tabular foundation model program aimed at surpassing TabPFN-class performance over time.
+
+This repository does not claim to already match TabPFN 2.5. It lays the groundwork needed to get there:
+
+- typed experiment configs
+- synthetic episodic pretraining
+- supervised finetuning and evaluation
+- live Hugging Face and Kaggle data acquisition
+- a transformer-based tabular model baseline
+- reproducible CLI entrypoints
+
+## Repository layout
+
+```text
+src/tabula/
+  cli.py
+  config.py
+  data/
+  evaluation/
+  models/
+  training/
+configs/
+  pretrain_synthetic.yaml
+  finetune_adult.yaml
+catalogs/
+  kaggle_tabular.json
+```
+
+## Quick start
+
+```bash
+python -m venv .venv
+. .venv/Scripts/activate
+pip install -e .[dev]
+tabula data auth-check
+tabula data hf-auth-check
+tabula data list --quality-tier gold --recommended-only
+tabula data search-hf --task-category tabular-classification --limit 10
+tabula data search-kaggle --tag 14101 --min-usability-rating 0.9
+tabula data fetch --dataset home_credit_default_risk
+tabula data ingest-kaggle --slug janiobachmann/bank-marketing-dataset --task-type binary --target-column deposit
+tabula train --config configs/pretrain_synthetic.yaml
+tabula train --config configs/finetune_adult.yaml
+```
+
+## Data workflow
+
+The repo supports both curated and live discovery workflows.
+
+```bash
+tabula data auth-check
+tabula data hf-auth-check
+tabula data list --quality-tier gold --recommended-only
+tabula data show --dataset amex_default_prediction
+tabula data fetch --dataset adult_census_income --output-root data/raw
+tabula data prepare --dataset adult_census_income --processed-root data/processed
+tabula data materialize --source-type dataset --recommended-only --processed-root data/processed
+tabula data fetch --dataset santander_customer_transaction --output-root data/raw
+tabula data prepare --dataset santander_customer_transaction --processed-root data/processed
+tabula data inspect --path data/raw/santander_customer_transaction
+tabula data fetch-hf --repo-id scikit-learn/adult-census-income --dataset-id hf_adult_census_income
+tabula data prepare --dataset hf_adult_census_income --processed-root data/processed
+tabula data fetch-kaggle --slug janiobachmann/bank-marketing-dataset --dataset-id kaggle_live_bank_marketing
+tabula data ingest-kaggle --slug janiobachmann/bank-marketing-dataset --dataset-id kaggle_live_bank_marketing
+```
+
+Prepared datasets now emit a stable `schema.json` and generated config so the training loader consumes deterministic preprocessing instead of refitting encoders on every run. The fetch and prepare path now also validates that source columns are flat tabular scalars, infers `target_column` and `task_type` when it can do so confidently, and persists that resolution into the raw dataset manifest for repeatable future runs.
+
+Set `HF_TOKEN` in `.env` when you want authenticated access for gated or rate-limited Hugging Face datasets. The CLI now resolves the token from `.env` first and passes it through the documented `huggingface_hub.HfApi(...)` and `datasets.load_dataset(...)` token hooks.
+
+See `docs/kaggle.md` for the curated Kaggle plan, `docs/sources.md` for live source commands, [docs/data_pipeline.md](C:/Users/AWright/OneDrive%20-%20Kahua,%20Inc/Projects/tabula/docs/data_pipeline.md) for the prepared artifact contract, [docs/architecture.md](C:/Users/AWright/OneDrive%20-%20Kahua,%20Inc/Projects/tabula/docs/architecture.md) for the model/pipeline diagram, and [docs/execution_plan.md](C:/Users/AWright/OneDrive%20-%20Kahua,%20Inc/Projects/tabula/docs/execution_plan.md) for the staged path to episodic training.
+
+## Current scope
+
+The initial scaffold focuses on the infrastructure required for a serious research loop:
+
+1. A configurable tabular transformer that handles numerical and categorical features.
+2. Two training regimes:
+   - synthetic episodic pretraining for prior-fitting/meta-learning style work
+   - standard supervised training for real datasets
+3. Evaluation hooks for classification and regression.
+
+## What is intentionally not done yet
+
+- PFN-style Bayesian posterior training objectives
+- a large synthetic task library approximating TabPFN priors
+- distributed training
+- benchmark orchestration across OpenML-scale suites
+- calibration and ensembling recipes
+
+Those are the next layers to build on top of this scaffold.
