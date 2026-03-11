@@ -252,6 +252,20 @@ class SchemaTextEncoder(nn.Module):
         return encoded
 
 
+class AttentionPooling(nn.Module):
+    """Learned attention pooling over sequence tokens."""
+    def __init__(self, d_model: int) -> None:
+        super().__init__()
+        self.query = nn.Parameter(torch.randn(1, 1, d_model) * 0.02)
+        self.attn = nn.MultiheadAttention(d_model, num_heads=1, batch_first=True)
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # x: (B, S, D) -> (B, D) via single attention query
+        query = self.query.expand(x.shape[0], -1, -1)
+        out, _ = self.attn(query, x, x, need_weights=False)
+        return out.squeeze(1)
+
+
 class TabularTransformer(nn.Module):
     def __init__(
         self,
@@ -337,6 +351,8 @@ class TabularTransformer(nn.Module):
             ]
         )
         self.norm = _build_norm(model_cfg.norm, d_model)
+        self.pooling_kind = getattr(model_cfg, "pooling", "cls")
+        self.attention_pool = AttentionPooling(d_model) if self.pooling_kind == "attention" else None
         self.head = nn.Linear(d_model, output_dim)
 
     def _feature_metadata_embedding(
@@ -507,7 +523,13 @@ class TabularTransformer(nn.Module):
         tokens = tokens + self.feature_slot_embedding(feature_ids)[None, :, :]
         for block in self.blocks:
             tokens = block(tokens)
-        return self.norm(tokens[:, 0])
+        
+        if self.pooling_kind == "attention" and self.attention_pool is not None:
+            return self.norm(self.attention_pool(tokens))
+        elif self.pooling_kind == "mean":
+            return self.norm(tokens.mean(dim=1))
+        else:
+            return self.norm(tokens[:, 0])
 
     def forward(self, x_num: torch.Tensor | TabularBatch, x_cat: torch.Tensor | None = None) -> torch.Tensor:
         if isinstance(x_num, TabularBatch):

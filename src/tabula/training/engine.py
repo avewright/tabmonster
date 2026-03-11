@@ -35,12 +35,12 @@ class StreamTrainState:
     patience: int = 0
 
 
-def _make_criterion(problem_type: str, output_dim: int) -> nn.Module:
+def _make_criterion(problem_type: str, output_dim: int, label_smoothing: float = 0.0) -> nn.Module:
     if problem_type == "regression":
         return nn.MSELoss()
     if output_dim == 1:
-        return nn.BCEWithLogitsLoss()
-    return nn.CrossEntropyLoss()
+        return nn.BCEWithLogitsLoss(reduction="mean")
+    return nn.CrossEntropyLoss(label_smoothing=label_smoothing)
 
 
 def _move_batch(batch: TabularBatch, device: torch.device) -> TabularBatch:
@@ -73,11 +73,14 @@ def _move_episode_batch(episode: EpisodeBatch, device: torch.device) -> EpisodeB
     )
 
 
-def _compute_loss(problem_type: str, output_dim: int, criterion: nn.Module, logits: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
+def _compute_loss(problem_type: str, output_dim: int, criterion: nn.Module, logits: torch.Tensor, y: torch.Tensor, label_smoothing: float = 0.0) -> torch.Tensor:
     if problem_type == "regression":
         return criterion(logits.reshape(-1), y.float())
     if output_dim == 1:
-        return criterion(logits.reshape(-1), y.float())
+        targets = y.float()
+        if label_smoothing > 0:
+            targets = targets * (1.0 - label_smoothing) + 0.5 * label_smoothing
+        return criterion(logits.reshape(-1), targets)
     return criterion(logits, y.long())
 
 
@@ -114,7 +117,8 @@ def _run_epoch(
         with torch.set_grad_enabled(is_train):
             with torch.autocast(device_type=device.type, dtype=_autocast_dtype(config), enabled=_use_amp(config, device)):
                 logits = model(batch)
-                raw_loss = _compute_loss(config.task.problem_type, output_dim, criterion, logits, batch.y)
+                _ls = getattr(config.training, 'label_smoothing', 0.0) if is_train else 0.0
+                raw_loss = _compute_loss(config.task.problem_type, output_dim, criterion, logits, batch.y, _ls)
                 loss = raw_loss / accumulation_steps if is_train else raw_loss
             if is_train:
                 if scaler is not None and _use_amp(config, device):
@@ -183,8 +187,9 @@ def _run_episode_epoch(
         with torch.set_grad_enabled(is_train):
             with torch.autocast(device_type=device.type, dtype=_autocast_dtype(config), enabled=_use_amp(config, device)):
                 logits = model(episode)
+                _ls = getattr(config.training, 'label_smoothing', 0.0) if is_train else 0.0
                 raw_loss = _compute_loss(
-                    config.task.problem_type, output_dim, criterion, logits, episode.query.y
+                    config.task.problem_type, output_dim, criterion, logits, episode.query.y, _ls
                 )
                 loss = raw_loss / accumulation_steps if is_train else raw_loss
             if is_train:
@@ -400,7 +405,8 @@ def _train_streaming(
         batch = _move_batch(batch, device)
         with torch.autocast(device_type=device.type, dtype=_autocast_dtype(config), enabled=_use_amp(config, device)):
             logits = model(batch)
-            raw_loss = _compute_loss(config.task.problem_type, output_dim, criterion, logits, batch.y)
+            _ls = getattr(config.training, 'label_smoothing', 0.0)
+            raw_loss = _compute_loss(config.task.problem_type, output_dim, criterion, logits, batch.y, _ls)
             loss = raw_loss / accumulation_steps
         if scaler is not None and _use_amp(config, device):
             scaler.scale(loss).backward()
@@ -515,6 +521,40 @@ def _train_streaming(
     return {"best_val_loss": state.best_val_loss, "checkpoint": str(checkpoint_path), "latest_checkpoint": str(latest_checkpoint)}
 
 
+def _build_scheduler(
+    config: ExperimentConfig,
+    optimizer: torch.optim.Optimizer,
+) -> torch.optim.lr_scheduler.LRScheduler | None:
+    """Build an optional learning rate scheduler based on config."""
+    sched_kind = getattr(config.training, "scheduler", "none")
+    if sched_kind == "none":
+        return None
+    if sched_kind == "cosine":
+        return torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer,
+            T_max=config.training.max_epochs,
+            eta_min=getattr(config.training, "lr_min", 1e-6),
+        )
+    if sched_kind == "cosine_warmup":
+        warmup_epochs = getattr(config.training, "warmup_epochs", 2)
+        main_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer,
+            T_max=max(config.training.max_epochs - warmup_epochs, 1),
+            eta_min=getattr(config.training, "lr_min", 1e-6),
+        )
+        warmup_scheduler = torch.optim.lr_scheduler.LinearLR(
+            optimizer,
+            start_factor=0.1,
+            total_iters=warmup_epochs,
+        )
+        return torch.optim.lr_scheduler.SequentialLR(
+            optimizer,
+            schedulers=[warmup_scheduler, main_scheduler],
+            milestones=[warmup_epochs],
+        )
+    raise ValueError(f"Unsupported scheduler kind '{sched_kind}'.")
+
+
 def train(
     config: ExperimentConfig,
     *,
@@ -558,9 +598,12 @@ def train(
     if pretrained_trunk_path is not None:
         trunk_summary = load_trunk_weights(model, pretrained_trunk_path, device=device)
 
-    criterion = _make_criterion(config.task.problem_type, effective_output_dim)
+    criterion = _make_criterion(config.task.problem_type, effective_output_dim, getattr(config.training, 'label_smoothing', 0.0))
     optimizer = torch.optim.AdamW(model.parameters(), lr=config.training.lr, weight_decay=config.training.weight_decay)
     scaler = torch.amp.GradScaler("cuda", enabled=_use_amp(config, device))
+
+    # Build learning rate scheduler
+    scheduler = _build_scheduler(config, optimizer)
 
     best_val = float("inf")
     patience = 0
@@ -597,6 +640,8 @@ def train(
     for epoch in range(1, config.training.max_epochs + 1):
         train_result = run_epoch(model, train_loader, device, criterion, optimizer, config, effective_output_dim, scaler)
         val_result = run_epoch(model, val_loader, device, criterion, None, config, effective_output_dim, None)
+        if scheduler is not None:
+            scheduler.step()
         print(
             f"epoch={epoch} "
             f"train_loss={train_result.loss:.4f} "

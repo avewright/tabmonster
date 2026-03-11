@@ -15,7 +15,7 @@ LOOP FOREVER:
     Come up with ideas to get validation score as low as possible
       - new model architecture
       - new data features 
-      - new data sources (online scrape)
+      - new data sources (huggingface, kaggle, etc)
       - performing research
     Ensure the data is not leaking and well formatted 
     REPEAT

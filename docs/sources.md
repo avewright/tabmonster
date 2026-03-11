@@ -75,3 +75,118 @@ Fetched live datasets are no longer tied to the curated catalog. Each fetch writ
 - normalized `train.csv`, `val.csv`, `test.csv`
 - a dataset card
 - a generated training config
+
+---
+
+## OpenML (20,000+ datasets, no auth)
+
+OpenML provides a massive free benchmark library via REST API. No API key required.
+
+```bash
+tabula data search-openml --query diabetes --limit 20
+tabula data fetch-openml --dataset-id 61 --output-root data/raw
+tabula data list-openml-cc18
+```
+
+The CC-18 benchmark suite (72 curated classification tasks) and CTR-23 regression suite are directly accessible:
+
+```python
+from tabula.data.openml import fetch_cc18_task_list, fetch_openml_dataset
+for task in fetch_cc18_task_list()[:5]:
+    fetch_openml_dataset(task.dataset_id, output_root="data/raw")
+```
+
+---
+
+## PMLB (~400 curated benchmarks, no auth)
+
+Penn Machine Learning Benchmarks: ≈400 clean tabular datasets served from GitHub, no API key needed.
+
+```bash
+tabula data search-pmlb --task classification --max-instances 5000
+tabula data fetch-pmlb --name iris --output-root data/raw
+```
+
+Bulk download:
+
+```python
+from tabula.data.pmlb import fetch_pmlb_benchmark_suite
+fetch_pmlb_benchmark_suite(task="classification", max_datasets=50, output_root="data/raw")
+```
+
+---
+
+## Synthetic Data Generators
+
+Seven generators produce endless training diversity without storing data:
+
+| Generator | Description |
+|---|---|
+| `gaussian_mixture` | GMM features, linear/tree decision boundary |
+| `tree_prior` | tabPFN-style random tree prior (correlated features) |
+| `polynomial` | Polynomial decision boundaries |
+| `scm` | Structural Causal Model (DAG) |
+| `regression_synthetic` | Linear/additive/interaction regression targets |
+| `mixed_type` | Wraps any generator, adds categorical/ordinal columns |
+| `timeseries` | ARMA series with statistical feature extraction |
+
+```bash
+tabula data generate-synthetic --n-datasets 10 --seed 42
+tabula data generate-synthetic --generator tree_prior --n-datasets 5 --n-samples 2000
+```
+
+---
+
+## Time-Series Feature Extraction
+
+Enrich time-indexed datasets with calendar, lag, rolling-window, panel, and FFT features:
+
+```bash
+tabula data extract-ts-features \
+    --input data/raw/bike_demand/train.csv \
+    --output data/raw/bike_demand_ts/train.csv \
+    --datetime-col datetime --target-col count \
+    --lags 1 24 168 --rolling-windows 24 168
+```
+
+```python
+from tabula.data.timeseries import auto_extract_timeseries_features
+df_rich = auto_extract_timeseries_features(df, target_col="sales")
+```
+
+---
+
+## Auto-Discovery Pipeline
+
+Scan all sources for new tabular datasets, skipping already-processed entries:
+
+```bash
+tabula data autodiscover \
+    --sources hf openml pmlb \
+    --output-root data/raw \
+    --registry-file artifacts/discovery_registry.json \
+    --max-new 50
+```
+
+---
+
+## RAM-Budgeted Stream Queue Builder
+
+Build a training queue from all available prepared datasets subject to a RAM budget:
+
+```bash
+tabula data build-queue --ram-budget-gb 8 --output queues/auto_8gb.json
+```
+
+The builder round-robins task types and applies inverse-size weighting so small datasets cycle more frequently.
+
+```python
+from tabula.data.stream_builder import StreamQueueBuilder
+builder = (
+    StreamQueueBuilder(ram_budget_gb=8)
+    .add_from_prepared_dir("data/processed")
+    .add_from_catalog("catalogs/kaggle_tabular.json")
+    .add_synthetic(n_datasets=20)
+)
+builder.save("queues/auto_8gb.json")
+```

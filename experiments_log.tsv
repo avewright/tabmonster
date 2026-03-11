@@ -1,0 +1,16 @@
+experiment_id	timestamp	description	status	val_loss	accuracy	roc_auc	steps	duration_s	notes
+exp_baseline_001	2026-03-10T13:45:55+00:00	Baseline adult d192 6L 6H swiglu rmsnorm	success	0.311278	0.8529	0.9088	20	145.4	
+exp_002_periodic_emb	2026-03-10T13:51:02.651688+00:00	Periodic numeric embeddings k=8	success	0.304675	0.8618	0.9131	20	161.3	
+exp_003_larger_periodic	2026-03-10T13:57:40.981126+00:00	Periodic + larger d256 8L 8H	success	0.305433	0.8593	0.9132	20	276.7	
+exp_004_periodic_highreg	2026-03-10T14:03:09.869482+00:00	Periodic + higher regularization dropout=0.15 ftd=0.1 wd=3e-4	success	0.306192	0.8606	0.9117	20	279.1	
+exp_005_periodic_cosine_warmup	2026-03-10T14:08:26.905794+00:00	Periodic + cosine warmup lr=5e-4 30ep	success	0.304791	0.8587	0.9126	30	200.5	
+exp_006_periodic16_low_lr	2026-03-10T14:16:23.325962+00:00	Periodic k=16 lr=1e-4 30ep	success	0.304475	0.8612	0.9133	30	440.6	
+exp_008_periodic16_wide_ff	2026-03-10T14:33:06.140263+00:00	Periodic k=16 + wider FFN d_ff=768 lr=1e-4	success	0.305985	0.8618	0.9136	25	334.4	
+exp_009_periodic16_gradaccum	2026-03-10T14:40:43.897432+00:00	Periodic k=16 lr=1.5e-4 grad_accum=2	success	0.308625	0.8572	0.9105	30	380.8	
+exp_010_periodic16_batch128	2026-03-10T14:50:01.858811+00:00	Periodic k=16 lr=2e-4 batch=128	success	0.304936	0.8578	0.9126	25	514.3	
+exp_011_attn_pool_periodic16	2026-03-10T14:56:43.730505+00:00	Attention pooling + periodic k=16 lr=1e-4	success	0.306606	0.8587	0.9119	30	321.5	
+exp_012_periodic16_labelsmooth	2026-03-10T15:03:21.525227+00:00	Periodic k=16 lr=1e-4 label_smooth=0.1	success	0.316696	0.8593	0.9126	30	277.0	
+exp_013_periodic16_seed7	2026-03-10T15:06:35.251092+00:00	Periodic k=16 lr=1e-4 seed=7	success	0.312954	0.8560	0.9084	30	140.6	
+exp_014_deep8_periodic16	2026-03-10T15:13:14.893440+00:00	Deep 8L + periodic k=16 lr=1e-4	success	0.305749	0.8578	0.9128	30	396.7	
+exp_015_periodic16_lr2e4	2026-03-10T15:21:48.683501+00:00	Periodic k=16 lr=2e-4 30ep	success	0.306264	0.8612	0.9123	30	423.3	
+exp_016_periodic16_swa	2026-03-10T15:30:50.978920+00:00	Periodic k=16 + SWA avg last 10 epochs	success	0.304207	0.8630	0.9138	30	485.3	

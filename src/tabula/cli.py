@@ -184,6 +184,96 @@ def build_parser() -> argparse.ArgumentParser:
     inspect_parser = data_subparsers.add_parser("inspect", help="Inspect CSV files under a local dataset directory.")
     inspect_parser.add_argument("--path", required=True, help="Directory containing downloaded dataset files.")
 
+    # ---- OpenML ----
+    search_openml_parser = data_subparsers.add_parser("search-openml", help="Search OpenML datasets via the REST API.")
+    search_openml_parser.add_argument("--query", help="Search query string.")
+    search_openml_parser.add_argument("--tag", help="Filter by OpenML tag.")
+    search_openml_parser.add_argument("--min-instances", type=int, default=50)
+    search_openml_parser.add_argument("--max-instances", type=int)
+    search_openml_parser.add_argument("--task-type", choices=["classification", "regression"])
+    search_openml_parser.add_argument("--limit", type=int, default=20)
+
+    fetch_openml_parser = data_subparsers.add_parser("fetch-openml", help="Download an OpenML dataset by id.")
+    fetch_openml_parser.add_argument("--dataset-id", required=True, type=int, help="OpenML numeric dataset id.")
+    fetch_openml_parser.add_argument("--output-root", default="data/raw")
+    fetch_openml_parser.add_argument("--local-dataset-id", help="Override local directory name.")
+    fetch_openml_parser.add_argument("--target-column", help="Override target column name.")
+    fetch_openml_parser.add_argument("--task-type", choices=["binary", "multiclass", "regression"])
+    fetch_openml_parser.add_argument("--max-rows", type=int)
+
+    data_subparsers.add_parser("list-openml-cc18", help="List the 72 CC-18 benchmark tasks on OpenML.")
+
+    # ---- PMLB ----
+    search_pmlb_parser = data_subparsers.add_parser("search-pmlb", help="Search PMLB benchmark datasets.")
+    search_pmlb_parser.add_argument("--task", choices=["classification", "regression"])
+    search_pmlb_parser.add_argument("--min-instances", type=int, default=50)
+    search_pmlb_parser.add_argument("--max-instances", type=int)
+    search_pmlb_parser.add_argument("--max-features", type=int)
+    search_pmlb_parser.add_argument("--query", help="Substring match against dataset name.")
+
+    fetch_pmlb_parser = data_subparsers.add_parser("fetch-pmlb", help="Download a PMLB dataset by name.")
+    fetch_pmlb_parser.add_argument("--name", required=True, help="PMLB dataset name, e.g. iris.")
+    fetch_pmlb_parser.add_argument("--output-root", default="data/raw")
+    fetch_pmlb_parser.add_argument("--local-dataset-id", help="Override local directory name.")
+    fetch_pmlb_parser.add_argument("--max-rows", type=int)
+
+    # ---- Synthetic generation ----
+    gen_synthetic_parser = data_subparsers.add_parser(
+        "generate-synthetic",
+        help="Generate one or more synthetic tabular datasets and write them to disk.",
+    )
+    gen_synthetic_parser.add_argument("--generator", default="random",
+        choices=["random", "gaussian_mixture", "tree_prior", "polynomial", "scm", "timeseries"],
+        help="Generator type (`random` picks randomly).")
+    gen_synthetic_parser.add_argument("--n-datasets", type=int, default=10, help="Number of datasets to generate.")
+    gen_synthetic_parser.add_argument("--n-samples", type=int, default=2000, help="Rows per dataset.")
+    gen_synthetic_parser.add_argument("--n-features", type=int, default=20, help="Features per dataset.")
+    gen_synthetic_parser.add_argument("--output-root", default="data/raw", help="Root dir for generated CSVs.")
+    gen_synthetic_parser.add_argument("--seed", type=int, default=42)
+
+    # ---- Time-series feature extraction ----
+    extract_ts_parser = data_subparsers.add_parser(
+        "extract-ts-features",
+        help="Enrich a CSV with calendar/lag/rolling features derived from a datetime column.",
+    )
+    extract_ts_parser.add_argument("--input", required=True, help="Input CSV path.")
+    extract_ts_parser.add_argument("--output", required=True, help="Output CSV path.")
+    extract_ts_parser.add_argument("--datetime-col", help="Datetime column name (auto-detected if omitted).")
+    extract_ts_parser.add_argument("--target-col", help="Target column for lag/rolling features.")
+    extract_ts_parser.add_argument("--entity-col", help="Entity/group column for panel features.")
+    extract_ts_parser.add_argument("--lags", nargs="*", type=int, default=[1, 7, 14])
+    extract_ts_parser.add_argument("--rolling-windows", nargs="*", type=int, default=[7, 28])
+
+    # ---- Auto-discovery ----
+    autodiscover_parser = data_subparsers.add_parser(
+        "autodiscover",
+        help="Auto-discover tabular datasets from HuggingFace, OpenML, and/or PMLB.",
+    )
+    autodiscover_parser.add_argument(
+        "--sources", nargs="+", default=["hf", "openml", "pmlb"],
+        choices=["hf", "openml", "pmlb"],
+    )
+    autodiscover_parser.add_argument("--output-root", default="data/raw")
+    autodiscover_parser.add_argument("--registry-file", default="artifacts/discovery_registry.json")
+    autodiscover_parser.add_argument("--max-new", type=int)
+    autodiscover_parser.add_argument("--hf-limit", type=int, default=40)
+    autodiscover_parser.add_argument("--openml-limit", type=int, default=40)
+    autodiscover_parser.add_argument("--pmlb-limit", type=int, default=50)
+
+    # ---- Queue builder ----
+    build_queue_parser = data_subparsers.add_parser(
+        "build-queue",
+        help="Build a RAM-budgeted training stream queue from all available prepared datasets.",
+    )
+    build_queue_parser.add_argument("--ram-budget-gb", type=float, default=8.0)
+    build_queue_parser.add_argument("--prepared-dir", default="data/processed")
+    build_queue_parser.add_argument("--kaggle-catalog", default="catalogs/kaggle_tabular.json")
+    build_queue_parser.add_argument("--hf-catalog", default="catalogs/hf_tabular.json")
+    build_queue_parser.add_argument("--discovery-registry", default="artifacts/discovery_registry.json")
+    build_queue_parser.add_argument("--include-synthetic", action="store_true", default=True)
+    build_queue_parser.add_argument("--n-synthetic", type=int, default=20)
+    build_queue_parser.add_argument("--output", default="queues/auto_tabular.json")
+
     # ------------------------------------------------------------------
     # curriculum-worker  (top-level background loop)
     # ------------------------------------------------------------------
@@ -787,6 +877,137 @@ def main() -> None:
             for summary in discover_csvs(args.path):
                 print(f"{summary.path}: rows={summary.row_count} columns={len(summary.columns)}")
                 print(", ".join(summary.columns))
+        # ---- OpenML ----
+        elif args.data_command == "search-openml":
+            from tabula.data.openml import search_openml_datasets
+            results = search_openml_datasets(
+                query=getattr(args, "query", None),
+                tag=getattr(args, "tag", None),
+                min_instances=getattr(args, "min_instances", 50),
+                max_instances=getattr(args, "max_instances", None),
+                task_type=getattr(args, "task_type", None),
+                limit=getattr(args, "limit", 20),
+            )
+            for r in results:
+                print(f"{r.dataset_id:6d}  {r.name:<40s}  rows={r.n_instances:>7d}  feats={r.n_features:>4d}  {r.format}")
+        elif args.data_command == "fetch-openml":
+            from tabula.data.openml import fetch_openml_dataset
+            raw_dir = fetch_openml_dataset(
+                dataset_id=args.dataset_id,
+                output_root=args.output_root,
+                local_dataset_id=getattr(args, "local_dataset_id", None),
+                target_column=getattr(args, "target_column", None),
+                task_type=getattr(args, "task_type", None),
+                max_rows=getattr(args, "max_rows", None),
+            )
+            print(f"Downloaded to {raw_dir}")
+        elif args.data_command == "list-openml-cc18":
+            from tabula.data.openml import fetch_cc18_task_list
+            tasks = fetch_cc18_task_list()
+            for t in tasks:
+                print(f"  task={t.task_id}  dataset={t.dataset_id}  {t.dataset_name}")
+        # ---- PMLB ----
+        elif args.data_command == "search-pmlb":
+            from tabula.data.pmlb import search_pmlb_datasets
+            results = search_pmlb_datasets(
+                task=getattr(args, "task", None),
+                min_instances=getattr(args, "min_instances", 50),
+                max_instances=getattr(args, "max_instances", None),
+                max_features=getattr(args, "max_features", None),
+                query=getattr(args, "query", None),
+            )
+            for r in results:
+                print(f"  {r.name:<40s}  task={r.task:<15s}  rows={r.n_instances:>7d}  feats={r.n_features:>4d}")
+            print(f"\n{len(results)} results")
+        elif args.data_command == "fetch-pmlb":
+            from tabula.data.pmlb import fetch_pmlb_dataset
+            raw_dir = fetch_pmlb_dataset(
+                name=args.name,
+                output_root=args.output_root,
+                local_dataset_id=getattr(args, "local_dataset_id", None),
+                max_rows=getattr(args, "max_rows", None),
+            )
+            print(f"Downloaded to {raw_dir}")
+        # ---- Synthetic ----
+        elif args.data_command == "generate-synthetic":
+            from tabula.data.synthetic import (
+                GaussianMixtureGenerator,
+                TreePriorGenerator,
+                PolynomialGenerator,
+                SCMGenerator,
+                TimeSeriesSyntheticGenerator,
+                generate_synthetic_batch,
+                sample_random_generator,
+            )
+            import pandas as pd  # noqa: F811
+            output_root = Path(args.output_root)
+            n_datasets = args.n_datasets
+            seed = args.seed
+            gen_type = args.generator
+            for i in range(n_datasets):
+                if gen_type == "random":
+                    gen = sample_random_generator(seed=seed + i)
+                elif gen_type == "gaussian_mixture":
+                    gen = GaussianMixtureGenerator(n_samples=args.n_samples, n_features=args.n_features)
+                elif gen_type == "tree_prior":
+                    gen = TreePriorGenerator(n_samples=args.n_samples, n_features=args.n_features)
+                elif gen_type == "polynomial":
+                    gen = PolynomialGenerator(n_samples=args.n_samples, n_features=args.n_features)
+                elif gen_type == "scm":
+                    gen = SCMGenerator(n_samples=args.n_samples, n_features=args.n_features)
+                elif gen_type == "timeseries":
+                    gen = TimeSeriesSyntheticGenerator()
+                else:
+                    gen = sample_random_generator(seed=seed + i)
+                df, meta = gen.generate(seed=seed + i)
+                local_id = f"synthetic_{gen_type}_{seed + i}"
+                out_dir = output_root / local_id
+                out_dir.mkdir(parents=True, exist_ok=True)
+                df.to_csv(out_dir / "train.csv", index=False)
+                print(f"  {local_id}: {df.shape}  target={meta.target_column}  task={meta.task_type}")
+        # ---- Time-series feature extraction ----
+        elif args.data_command == "extract-ts-features":
+            import pandas as pd  # noqa: F811
+            from tabula.data.timeseries import TimeSeriesToTabularTransformer, detect_temporal_columns
+            df = pd.read_csv(args.input)
+            dt_col = getattr(args, "datetime_col", None) or (detect_temporal_columns(df) or [None])[0]
+            t = TimeSeriesToTabularTransformer(
+                datetime_col=dt_col,
+                target_col=getattr(args, "target_col", None),
+                entity_col=getattr(args, "entity_col", None),
+                lags=list(args.lags),
+                rolling_windows=list(args.rolling_windows),
+            )
+            out_df = t.fit_transform(df)
+            out_path = Path(args.output)
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_df.to_csv(out_path, index=False)
+            print(f"Wrote {out_df.shape} → {out_path}")
+        # ---- Auto-discovery ----
+        elif args.data_command == "autodiscover":
+            from tabula.data.autodiscovery import run_discovery_pass
+            run_discovery_pass(
+                sources=args.sources,
+                output_root=args.output_root,
+                registry_file=args.registry_file,
+                max_new=getattr(args, "max_new", None),
+                hf_limit=args.hf_limit,
+                openml_limit=args.openml_limit,
+                pmlb_limit=args.pmlb_limit,
+            )
+        # ---- Build queue ----
+        elif args.data_command == "build-queue":
+            from tabula.data.stream_builder import build_auto_queue
+            build_auto_queue(
+                ram_budget_gb=args.ram_budget_gb,
+                prepared_root=args.prepared_dir,
+                kaggle_catalog=args.kaggle_catalog,
+                hf_catalog=args.hf_catalog,
+                discovery_registry=args.discovery_registry,
+                include_synthetic=args.include_synthetic,
+                n_synthetic=args.n_synthetic,
+                output_path=args.output,
+            )
     elif args.command == "curriculum-worker":
         _run_curriculum_worker(args)
     elif args.command == "curriculum":

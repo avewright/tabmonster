@@ -70,6 +70,7 @@ class ModelConfig:
     schema_pretrained_model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
     schema_pretrained_max_length: int = 32
     schema_pretrained_trainable: bool = False
+    pooling: Literal["cls", "mean", "attention"] = "cls"
 
 
 @dataclass
@@ -88,6 +89,10 @@ class TrainingConfig:
     log_interval: int = 20
     early_stopping_patience: int = 5
     resume: bool = True
+    scheduler: Literal["none", "cosine", "cosine_warmup"] = "none"
+    warmup_epochs: int = 2
+    lr_min: float = 1e-6
+    label_smoothing: float = 0.0
 
 
 @dataclass
