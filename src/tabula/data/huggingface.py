@@ -62,16 +62,17 @@ def search_huggingface_datasets(
     from huggingface_hub import HfApi
 
     api = HfApi(token=_load_huggingface_token())
-    payload = list(
-        api.list_datasets(
-            filter=f"task_categories:{task_category}",
-            search=query,
-            sort=sort,
-            direction=-1,
-            limit=limit,
-            expand=["downloads", "likes", "lastModified", "tags"],
-        )
-    )
+    # When using task_category filter, don't combine with search text
+    # as HF API returns 0 results when both are specified
+    kwargs: dict = {
+        "sort": sort,
+        "limit": limit,
+    }
+    if task_category:
+        kwargs["filter"] = f"task_categories:{task_category}"
+    if query and not task_category:
+        kwargs["search"] = query
+    payload = list(api.list_datasets(**kwargs))
     return [
         HuggingFaceDatasetResult(
             repo_id=item.id,

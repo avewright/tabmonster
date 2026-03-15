@@ -102,7 +102,7 @@ class DiscoveryRegistry:
 
 
 def _validate_raw_dir(raw_dir: Path) -> tuple[bool, str, int, int]:
-    """Try to load the raw CSV and build a schema.
+    """Check that the raw directory has a loadable CSV with enough data.
 
     Returns (ok, error_msg, n_rows, n_cols).
     """
@@ -114,11 +114,15 @@ def _validate_raw_dir(raw_dir: Path) -> tuple[bool, str, int, int]:
         df = pd.read_csv(csv_path, nrows=5000)
         if df.shape[0] < 20 or df.shape[1] < 2:
             return False, f"too small: {df.shape}", 0, 0
-        from tabula.data.schema import build_schema  # noqa: PLC0415
-        try:
-            build_schema(df)
-        except Exception as exc:
-            return False, f"schema error: {exc}", df.shape[0], df.shape[1]
+        # Check that at least some columns have numeric or low-cardinality data
+        usable = 0
+        for col in df.columns:
+            if pd.api.types.is_numeric_dtype(df[col]):
+                usable += 1
+            elif df[col].nunique() < 200:
+                usable += 1
+        if usable < 2:
+            return False, f"only {usable} usable columns", df.shape[0], df.shape[1]
         return True, "", df.shape[0], df.shape[1]
     except Exception as exc:
         return False, str(exc), 0, 0
@@ -139,18 +143,25 @@ def _discover_hf(
     from tabula.data.huggingface import search_huggingface_datasets, fetch_huggingface_dataset  # noqa
 
     new_records: list[DiscoveryRecord] = []
-    try:
-        results = search_huggingface_datasets(
-            query="tabular classification",
-            tags=["tabular", "tabular-classification", "tabular-regression"],
-            limit=limit,
-        )
-    except Exception as exc:
-        warnings.warn(f"HF search failed: {exc}")
-        return new_records
+    # Search multiple task categories to find more datasets
+    categories = ["tabular-classification", "tabular-regression"]
+    seen_ids: set[str] = set()
+    all_results = []
+    for cat in categories:
+        try:
+            results = search_huggingface_datasets(
+                task_category=cat,
+                limit=limit,
+            )
+            for r in results:
+                if r.repo_id not in seen_ids:
+                    seen_ids.add(r.repo_id)
+                    all_results.append(r)
+        except Exception as exc:
+            warnings.warn(f"HF search failed for {cat}: {exc}")
 
-    for res in results:
-        dataset_id = f"hf_{res.dataset_id.replace('/', '_')}"
+    for res in all_results:
+        dataset_id = f"hf_{res.repo_id.replace('/', '_')}"
         if registry.contains(dataset_id):
             continue
         raw_dir = output_root / dataset_id
@@ -159,14 +170,29 @@ def _discover_hf(
         error = ""
         n_rows = n_cols = 0
         try:
-            fetch_huggingface_dataset(
-                repo_id=res.dataset_id,
-                output_root=str(output_root),
-                local_dataset_id=dataset_id,
-                max_rows=bootstrap_rows,
-            )
+            # Use a timeout to avoid blocking on huge datasets
+            import signal
+
+            def _timeout_handler(signum, frame):
+                raise TimeoutError("HF dataset download timed out")
+
+            old_handler = signal.signal(signal.SIGALRM, _timeout_handler)
+            signal.alarm(120)  # 2 minute timeout per dataset
+            try:
+                fetch_huggingface_dataset(
+                    repo_id=res.repo_id,
+                    output_root=str(output_root),
+                    dataset_id=dataset_id,
+                    max_rows=bootstrap_rows,
+                )
+            finally:
+                signal.alarm(0)
+                signal.signal(signal.SIGALRM, old_handler)
             ok, error, n_rows, n_cols = _validate_raw_dir(raw_dir)
             status = "ok" if ok else "schema_fail"
+        except TimeoutError:
+            status = "download_fail"
+            error = "download timed out (>120s)"
         except Exception as exc:
             status = "download_fail"
             error = str(exc)[:200]
@@ -174,8 +200,8 @@ def _discover_hf(
         rec = DiscoveryRecord(
             dataset_id=dataset_id,
             source="hf",
-            external_ref=res.dataset_id,
-            task_type=getattr(res, "task_type", "unknown"),
+            external_ref=res.repo_id,
+            task_type="unknown",
             n_rows=n_rows,
             n_cols=n_cols,
             status=status,

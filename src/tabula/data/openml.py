@@ -42,9 +42,9 @@ import pandas as pd
 from tabula.data.manifest import DatasetManifest, sanitize_dataset_id, write_manifest
 
 
-OPENML_API_BASE = "https://api.openml.org/json"
-OPENML_CSV_BASE = "https://api.openml.org/data/get_csv"
-OPENML_ARFF_BASE = "https://api.openml.org/data/v1/download"
+OPENML_API_BASE = "https://www.openml.org/api/v1/json"
+OPENML_CSV_BASE = "https://www.openml.org/data/get_csv"
+OPENML_ARFF_BASE = "https://www.openml.org/data/v1/download"
 
 
 @dataclass(frozen=True)
@@ -236,8 +236,21 @@ def list_openml_tasks(
             inputs = [inputs]
         input_map: dict[str, Any] = {inp.get("name"): inp.get("value") for inp in inputs if isinstance(inp, dict)}
         target_feature = str(input_map.get("target_feature", ""))
-        dataset_id = _parse_int(input_map.get("source_data", {}).get("data_set_id") if isinstance(input_map.get("source_data"), dict) else 0)
-        dataset_name = str(input_map.get("source_data", {}).get("name", "") if isinstance(input_map.get("source_data"), dict) else "")
+        # dataset_id and name are top-level in the task response
+        dataset_id = _parse_int(item.get("did", 0))
+        dataset_name = str(item.get("name", ""))
+        # Fall back to input_map source_data if top-level is empty
+        if dataset_id == 0:
+            src = input_map.get("source_data")
+            if isinstance(src, dict):
+                dataset_id = _parse_int(src.get("data_set_id", 0))
+                dataset_name = dataset_name or str(src.get("name", ""))
+        eval_measure = ""
+        em = input_map.get("evaluation_measures")
+        if isinstance(em, dict):
+            eval_measure = str(em.get("evaluation_measure", ""))
+        elif isinstance(em, str):
+            eval_measure = em
         results.append(
             OpenMLTaskResult(
                 task_id=_parse_int(item.get("task_id", 0)),
@@ -246,7 +259,7 @@ def list_openml_tasks(
                 dataset_name=dataset_name,
                 target_feature=target_feature,
                 n_instances=None,
-                evaluation_measure=str(input_map.get("evaluation_measures", {}).get("evaluation_measure", "") if isinstance(input_map.get("evaluation_measures"), dict) else ""),
+                evaluation_measure=eval_measure,
             )
         )
     return results
