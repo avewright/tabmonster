@@ -14,3 +14,128 @@ exp_013_periodic16_seed7	2026-03-10T15:06:35.251092+00:00	Periodic k=16 lr=1e-4 
 exp_014_deep8_periodic16	2026-03-10T15:13:14.893440+00:00	Deep 8L + periodic k=16 lr=1e-4	success	0.305749	0.8578	0.9128	30	396.7	
 exp_015_periodic16_lr2e4	2026-03-10T15:21:48.683501+00:00	Periodic k=16 lr=2e-4 30ep	success	0.306264	0.8612	0.9123	30	423.3	
 exp_016_periodic16_swa	2026-03-10T15:30:50.978920+00:00	Periodic k=16 + SWA avg last 10 epochs	success	0.304207	0.8630	0.9138	30	485.3	
+exp_019_periodic32_swa	2026-03-14T16:01:08.433067+00:00	Periodic k=32 + SWA from epoch 25, lr=1e-4, 40 epochs	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_020_deep10_periodic16_swa	2026-03-14T16:01:08.762377+00:00	Deep 10L + periodic k=16 lr=1e-4 SWA from 20, 35ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_021_wide256_periodic16_swa	2026-03-14T16:01:09.106544+00:00	Wide d256 8H + periodic k=16 lr=8e-5 SWA from 25, 40ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_022_cosine_warmup_swa	2026-03-14T16:01:09.460270+00:00	Periodic k=16 cosine_warmup lr=2e-4 SWA from 25, 40ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_023_dropout02_periodic16_swa	2026-03-14T16:01:09.797021+00:00	Periodic k=16 dropout=0.2 ftd=0.1 lr=1e-4 SWA from 20, 35ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_024_lr5e5_periodic16_swa	2026-03-14T16:01:10.108609+00:00	Periodic k=16 lr=5e-5 SWA from 30, 50ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_025_wd3e4_periodic16_swa	2026-03-14T16:01:10.418949+00:00	Periodic k=16 lr=1e-4 wd=3e-4 SWA from 20, 35ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_026_batch512_periodic16_swa	2026-03-14T16:01:10.739936+00:00	Periodic k=16 batch=512 lr=2e-4 SWA from 25, 40ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_027_ff768_periodic16_swa	2026-03-14T16:01:11.047755+00:00	Periodic k=16 d_ff=768 lr=1e-4 SWA from 20, 35ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_028_meanpool_periodic16_swa	2026-03-14T16:01:11.371026+00:00	Mean pooling + periodic k=16 lr=1e-4 SWA from 20, 35ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_029_cosine_periodic16_swa	2026-03-14T16:01:11.687691+00:00	Periodic k=16 cosine lr=1.5e-4 SWA from 25, 40ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_030_gradaccum4_periodic16_swa	2026-03-14T16:01:11.999051+00:00	Periodic k=16 grad_accum=4 lr=3e-4 SWA from 20, 35ep	crash					0.0	Pretrained text encoding requires `transformers`. Install it with `pip install transformers` or switch model.text_encoder back to `custom`.
+exp_019_periodic32_swa	2026-03-14T16:05:31.971057+00:00	Periodic k=32 + SWA from epoch 25, lr=1e-4, 40 epochs	success	0.303895	0.8606	0.9162	40	208.7	
+exp_020_deep10_periodic16_swa	2026-03-14T16:09:08.555485+00:00	Deep 10L + periodic k=16 lr=1e-4 SWA from 20, 35ep	success	0.304103	0.8595	0.9163	35	216.2	
+exp_021_wide256_periodic16_swa	2026-03-14T16:12:17.664351+00:00	Wide d256 8H + periodic k=16 lr=8e-5 SWA from 25, 40ep	success	0.302079	0.8606	0.9161	40	188.7	
+exp_022_cosine_warmup_swa	2026-03-14T16:15:36.464129+00:00	Periodic k=16 cosine_warmup lr=2e-4 SWA from 25, 40ep	success	0.304447	0.8604	0.9164	40	198.4	
+exp_023_dropout02_periodic16_swa	2026-03-14T16:18:30.760042+00:00	Periodic k=16 dropout=0.2 ftd=0.1 lr=1e-4 SWA from 20, 35ep	success	0.306209	0.8565	0.9143	35	173.9	
+exp_024_lr5e5_periodic16_swa	2026-03-14T16:22:56.113615+00:00	Periodic k=16 lr=5e-5 SWA from 30, 50ep	success	0.303644	0.8587	0.9153	50	265.0	
+exp_025_wd3e4_periodic16_swa	2026-03-14T16:27:08.847681+00:00	Periodic k=16 lr=1e-4 wd=3e-4 SWA from 20, 35ep	success	0.302285	0.8589	0.9164	35	252.4	
+exp_026_batch512_periodic16_swa	2026-03-14T16:29:56.079490+00:00	Periodic k=16 batch=512 lr=2e-4 SWA from 25, 40ep	success	0.301533	0.8595	0.9168	40	166.9	
+exp_027_ff768_periodic16_swa	2026-03-14T16:34:24.136234+00:00	Periodic k=16 d_ff=768 lr=1e-4 SWA from 20, 35ep	success	0.302649	0.8628	0.9164	35	267.7	
+exp_028_meanpool_periodic16_swa	2026-03-14T16:38:37.475591+00:00	Mean pooling + periodic k=16 lr=1e-4 SWA from 20, 35ep	success	0.303917	0.8581	0.9147	35	252.9	
+exp_029_cosine_periodic16_swa	2026-03-14T16:43:25.450043+00:00	Periodic k=16 cosine lr=1.5e-4 SWA from 25, 40ep	success	0.302451	0.8597	0.9169	40	287.6	
+exp_030_gradaccum4_periodic16_swa	2026-03-14T16:47:14.634409+00:00	Periodic k=16 grad_accum=4 lr=3e-4 SWA from 20, 35ep	success	0.303882	0.8608	0.9153	35	228.8	
+exp_031_batch512_wide256_swa	2026-03-14T17:27:20.991195+00:00	Batch=512 + wide d256 8H periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.304212	0.8612	0.9167	40	166.7	
+exp_032_mixup_batch512_swa	2026-03-14T17:29:50.274673+00:00	Mixup alpha=0.2 + batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.330316	0.8518	0.8977	40	148.9	
+exp_033_batch512_wd3e4_swa	2026-03-14T17:32:20.825229+00:00	Batch=512 wd=3e-4 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.301821	0.8608	0.9168	40	150.2	
+exp_034_deep12_batch512_swa	2026-03-14T17:36:09.074101+00:00	Deep 12L batch=512 periodic k=16 lr=1.5e-4 SWA from 25, 40ep	success	0.306275	0.8628	0.9153	40	227.9	
+exp_035_periodic24_batch512_swa	2026-03-14T17:38:39.955795+00:00	Periodic k=24 batch=512 lr=2e-4 SWA from 25, 40ep	success	0.304456	0.8600	0.9167	40	150.5	
+exp_036_cosine_batch512_lr3e4_swa	2026-03-14T17:41:10.404141+00:00	Cosine warmup batch=512 lr=3e-4 periodic k=16 SWA from 25, 40ep	success	0.303661	0.8583	0.9164	40	150.1	
+exp_037_wide256_wd3e4_batch512_swa	2026-03-14T17:43:56.810438+00:00	Wide d256 wd=3e-4 batch=512 lr=1.5e-4 periodic k=16 SWA from 25, 40ep	success	0.302834	0.8624	0.9168	40	166.0	
+exp_038_batch1024_swa	2026-03-14T17:46:03.590420+00:00	Batch=1024 periodic k=16 lr=3e-4 SWA from 25, 40ep	success	0.303393	0.8591	0.9158	40	126.4	
+exp_039_d256_batch512_k32_swa	2026-03-14T17:48:50.541514+00:00	Wide d256 batch=512 periodic k=32 lr=1.5e-4 SWA from 25, 40ep	success	0.303876	0.8618	0.9160	40	166.6	
+exp_040_deep8_d256_batch512_swa	2026-03-14T17:52:11.356260+00:00	Deep 8L d256 8H batch=512 periodic k=16 lr=1e-4 SWA from 25, 40ep	success	0.301844	0.8616	0.9166	40	200.4	
+exp_041_dropout015_wd2e4_batch512_swa	2026-03-14T17:54:41.215364+00:00	Dropout=0.15 wd=2e-4 batch=512 lr=2e-4 periodic k=16 SWA from 25, 40ep	success	0.302355	0.8610	0.9167	40	149.5	
+exp_042_long60_batch512_swa	2026-03-14T17:58:25.273061+00:00	Long 60ep batch=512 lr=2e-4 periodic k=16 SWA from 35	success	0.311481	0.8583	0.9150	60	223.7	
+exp_060_labelsmooth005_batch512_swa	2026-03-14T18:05:44.477272+00:00	Label smoothing=0.05 batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.304545	0.8595	0.9168	40	153.2	
+exp_061_labelsmooth01_batch512_swa	2026-03-14T18:08:14.305752+00:00	Label smoothing=0.1 batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.314261	0.8597	0.9168	40	149.5	
+exp_062_snapshot_5x8	2026-03-14T18:10:45.314643+00:00	Snapshot ensemble: 5 cycles × 8 epochs, average predictions	success	0.303110	0.8606	0.9148	40	150.7	
+exp_063_attnpool_batch512_swa	2026-03-14T18:13:17.418737+00:00	Attention pooling batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.305705	0.8616	0.9159	40	151.8	
+exp_064_multiseed5_best	2026-03-14T18:25:48.318927+00:00	Multi-seed ensemble: 5 seeds of best config (batch=512 periodic k=16)	success	0.301662	0.8600	0.9172	40	750.5	
+exp_065_swa_wide_15_batch512	2026-03-14T18:28:17.965341+00:00	Wider SWA from epoch 15 batch=512 periodic k=16 lr=2e-4, 40ep	success	0.301982	0.8600	0.9164	40	149.3	
+exp_066_hash_batch512_swa	2026-03-14T18:30:48.959552+00:00	Hash schema encoder batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.303033	0.8626	0.9162	40	150.6	
+exp_067_ftdrop01_batch512_swa	2026-03-14T18:33:18.838769+00:00	Feature token dropout=0.1 batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.301937	0.8583	0.9168	40	149.5	
+exp_068_snapshot_8x5	2026-03-14T18:35:48.038535+00:00	Snapshot ensemble: 8 cycles × 5 epochs, average predictions	success	0.303439	0.8610	0.9149	40	148.8	
+exp_069_ls005_wd3e4_batch512_swa	2026-03-14T18:38:00.006065+00:00	Label smooth=0.05 wd=3e-4 batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.304394	0.8587	0.9169	40	131.6	
+exp_050_transfer_d256_swa	2026-03-14T18:42:06.106374+00:00	Transfer d256 8L finetune-all lr=2e-4 SWA from 25	success	0.307096	0.8600	0.9136	40	125.8	
+exp_051_transfer_freeze5_swa	2026-03-14T18:44:09.773753+00:00	Transfer freeze-5ep then unfreeze lr=3e-4 SWA from 25	success	0.308911	0.8608	0.9148	40	123.4	
+exp_052_transfer_lowlr_swa	2026-03-14T18:46:14.315505+00:00	Transfer high head-lr=5e-4 backbone-lr=5e-5 SWA from 25	success	0.309830	0.8600	0.9150	40	124.2	
+exp_053_transfer_long60_swa	2026-03-14T18:49:21.306848+00:00	Transfer lr=1e-4 60ep SWA from 35	success	0.309144	0.8569	0.9126	60	186.7	
+exp_054_transfer_cosine_swa	2026-03-14T18:51:25.694018+00:00	Transfer cosine-warmup lr=2e-4 SWA from 25	success	0.309487	0.8575	0.9124	40	124.1	
+exp_070_combined_best_swa	2026-03-14T18:56:29.714152+00:00	Combined: wd=3e-4 ft_drop=0.1 batch=512 periodic k=16 lr=2e-4 SWA from 15, 40ep	success	0.302563	0.8585	0.9164	40	121.3	
+exp_071_ensemble10_best	2026-03-14T19:15:41.191695+00:00	10-seed ensemble: best config (batch=512 periodic k=16 lr=2e-4 SWA)	success	0.301803	0.8610	0.9172	40	1151.1	
+exp_080_eng_base_swa	2026-03-14T19:22:21.425228+00:00	Engineered features + batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	crash					0.0	string indices must be integers, not 'str'
+exp_081_eng_wide256_swa	2026-03-14T19:22:21.633397+00:00	Engineered + d256 8H batch=512 periodic k=16 lr=1.5e-4 SWA from 25, 40ep	crash					0.0	string indices must be integers, not 'str'
+exp_082_eng_wd3e4_swa	2026-03-14T19:22:21.840543+00:00	Engineered + wd=3e-4 batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	crash					0.0	string indices must be integers, not 'str'
+exp_083_eng_deep8_swa	2026-03-14T19:22:22.046765+00:00	Engineered + 8L batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	crash					0.0	string indices must be integers, not 'str'
+exp_084_eng_ftdrop_swa	2026-03-14T19:22:22.254770+00:00	Engineered + ft_dropout=0.1 batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	crash					0.0	string indices must be integers, not 'str'
+exp_085_eng_swa15_swa	2026-03-14T19:22:22.463689+00:00	Engineered + SWA from 15 batch=512 periodic k=16 lr=2e-4, 40ep	crash					0.0	string indices must be integers, not 'str'
+exp_086_eng_k32_swa	2026-03-14T19:22:22.671478+00:00	Engineered + periodic k=32 batch=512 lr=2e-4 SWA from 25, 40ep	crash					0.0	string indices must be integers, not 'str'
+exp_087_eng_d256_8L_swa	2026-03-14T19:22:22.883648+00:00	Engineered + d256 8L 8H batch=512 periodic k=16 lr=1e-4 SWA from 25, 40ep	crash					0.0	string indices must be integers, not 'str'
+exp_072_diverse_ensemble5	2026-03-14T19:25:23.981169+00:00	Diverse ensemble: 5 diff architectures from best configs	success	0.301972	0.8612	0.9168	40	582.5	
+exp_080_eng_base_swa	2026-03-14T19:26:35.727885+00:00	Engineered features + batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.300691	0.8602	0.9176	40	148.6	
+exp_081_eng_wide256_swa	2026-03-14T19:29:05.724733+00:00	Engineered + d256 8H batch=512 periodic k=16 lr=1.5e-4 SWA from 25, 40ep	success	0.301570	0.8614	0.9174	40	149.6	
+exp_082_eng_wd3e4_swa	2026-03-14T19:31:21.803115+00:00	Engineered + wd=3e-4 batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.300717	0.8602	0.9176	40	135.7	
+exp_083_eng_deep8_swa	2026-03-14T19:33:51.066281+00:00	Engineered + 8L batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.303296	0.8649	0.9173	40	148.9	
+exp_084_eng_ftdrop_swa	2026-03-14T19:36:09.780486+00:00	Engineered + ft_dropout=0.1 batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.300232	0.8604	0.9176	40	138.2	
+exp_085_eng_swa15_swa	2026-03-14T19:38:27.700415+00:00	Engineered + SWA from 15 batch=512 periodic k=16 lr=2e-4, 40ep	success	0.302459	0.8612	0.9163	40	137.6	
+exp_086_eng_k32_swa	2026-03-14T19:40:44.953589+00:00	Engineered + periodic k=32 batch=512 lr=2e-4 SWA from 25, 40ep	success	0.304065	0.8608	0.9163	40	136.8	
+exp_087_eng_d256_8L_swa	2026-03-14T19:43:41.884461+00:00	Engineered + d256 8L 8H batch=512 periodic k=16 lr=1e-4 SWA from 25, 40ep	success	0.300632	0.8616	0.9173	40	176.6	
+exp_073_ensemble10_wd3e4	2026-03-14T19:46:02.585348+00:00	10-seed ensemble: batch=512 wd=3e-4 periodic k=16 lr=2e-4 SWA	success	0.301763	0.8606	0.9172	40	1238.3	
+exp_090_eng_ftdrop_wd3e4_swa	2026-03-14T19:48:39.761154+00:00	Eng + ft_dropout=0.1 wd=3e-4 batch=512 SWA from 25, 40ep	success	0.300254	0.8606	0.9176	40	139.8	
+exp_091_eng_ftdrop015_swa	2026-03-14T19:51:01.441241+00:00	Eng + ft_dropout=0.15 batch=512 SWA from 25, 40ep	success	0.301554	0.8604	0.9168	40	141.3	
+exp_092_eng_ftdrop01_drop015_swa	2026-03-14T19:53:21.152582+00:00	Eng + ft_dropout=0.1 dropout=0.15 batch=512 SWA from 25, 40ep	success	0.302337	0.8614	0.9170	40	139.4	
+exp_093_eng_ftdrop01_d256_swa	2026-03-14T19:55:57.350775+00:00	Eng + ft_dropout=0.1 d256 8H batch=512 lr=1.5e-4 SWA from 25, 40ep	success	0.300951	0.8634	0.9172	40	155.8	
+exp_074_mega_diverse_10	2026-03-14T20:07:32.922592+00:00	Mega diverse: 10 different arch+seed combos	success	0.301863	0.8612	0.9171	40	1290.1	
+exp_094_eng_ensemble10_ftdrop	2026-03-14T20:16:59.679153+00:00	10-seed ensemble: eng + ft_dropout=0.1 batch=512 SWA	success	0.300479	0.8608	0.9176	40	1261.9	
+exp_095_eng_ftdrop01_cosine_swa	2026-03-14T20:19:02.086332+00:00	Eng + ft_dropout=0.1 cosine_warmup lr=2e-4 batch=512 SWA from 25, 40ep	success	0.303769	0.8585	0.9154	40	122.2	
+exp_096_eng_ftdrop01_swa20	2026-03-14T20:20:42.406487+00:00	Eng + ft_dropout=0.1 batch=512 SWA from 20, 40ep	success	0.301320	0.8608	0.9170	40	99.9	
+exp_097_eng_ftdrop01_swa10	2026-03-14T20:22:17.455572+00:00	Eng + ft_dropout=0.1 batch=512 SWA from 10, 40ep (30 checkpoints)	success	0.302908	0.8595	0.9159	40	94.7	
+exp_100_v2_base_swa	2026-03-14T20:35:41.369806+00:00	v2 data + ft_dropout=0.1 batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.303195	0.8614	0.9161	40	156.7	
+exp_101_v2_wd3e4_swa	2026-03-14T20:38:16.042863+00:00	v2 + wd=3e-4 batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.303151	0.8612	0.9162	40	154.3	
+exp_102_v2_d256_swa	2026-03-14T20:41:44.152904+00:00	v2 + d256 8H batch=512 periodic k=16 lr=1.5e-4 SWA from 25, 40ep	success	0.301656	0.8597	0.9164	40	207.6	
+exp_103_v2_deep8_swa	2026-03-14T20:44:37.034341+00:00	v2 + 8L batch=512 periodic k=16 lr=2e-4 SWA from 25, 40ep	success	0.304095	0.8626	0.9168	40	172.4	
+exp_104_v2_d256_8L_swa	2026-03-14T20:50:02.803978+00:00	v2 + d256 8L 8H batch=512 periodic k=16 lr=1e-4 SWA from 25, 40ep	success	0.301637	0.8581	0.9167	40	325.4	
+exp_110_eng_80ep_swa50	2026-03-14T22:17:44.955848+00:00	Eng + 80ep lr=1.5e-4 SWA from 50	success	0.302702	0.8612	0.9176	80	852.9	
+exp_111_eng_gradaccum4	2026-03-14T22:24:41.740748+00:00	Eng + grad_accum=4 eff_batch=2048 lr=4e-4 SWA	success	0.302784	0.8595	0.9154	40	415.7	
+exp_112_eng_ls002	2026-03-14T22:31:46.148557+00:00	Eng + label_smoothing=0.02 SWA	success	0.299319	0.8597	0.9176	40	422.9	
+exp_114_eng_cosine60	2026-03-14T22:42:54.945341+00:00	Eng + cosine_warmup 60ep warmup=3 SWA from 40	success	0.299142	0.8612	0.9183	60	665.2	
+exp_115_eng_deep12_d128	2026-03-14T22:52:33.629255+00:00	Eng + 12L d128 4H d_ff=256 SWA	success	0.304036	0.8579	0.9158	40	576.5	
+exp_116_eng_wide384_4L	2026-03-14T22:59:02.648818+00:00	Eng + d384 4L 12H d_ff=768 lr=1e-4 SWA	success	0.305207	0.8571	0.9146	40	387.0	
+exp_118_eng_lowlr60	2026-03-14T23:10:12.574753+00:00	Eng + lr=1e-4 60ep SWA from 40	success	0.300814	0.8593	0.9174	60	669.6	
+exp_119_eng_ftd15_cosine	2026-03-14T23:19:01.680692+00:00	Eng + ft_dropout=0.15 cosine_warmup 50ep SWA from 30	success	0.300477	0.8583	0.9172	50	528.7	
+exp_120_ls02_cosine60	2026-03-14T23:31:23.260883+00:00	Eng + ls=0.02 + cosine_warmup 60ep SWA from 40	success	0.298519	0.8606	0.9185	60	217.2	
+exp_121_ls02_cosine60_swa35	2026-03-14T23:34:27.116187+00:00	Eng + ls=0.02 + cosine_warmup 60ep SWA from 35	success	0.298557	0.8606	0.9185	60	183.5	
+exp_122_ls02_cosine80	2026-03-14T23:38:36.550798+00:00	Eng + ls=0.02 + cosine_warmup 80ep SWA from 55	success	0.298173	0.8614	0.9190	80	249.0	
+exp_123_ls01_cosine60	2026-03-14T23:41:29.846536+00:00	Eng + ls=0.01 + cosine_warmup 60ep SWA from 40	success	0.297603	0.8624	0.9188	60	172.9	
+exp_124_ls02_cosine_lowlr	2026-03-14T23:44:34.410626+00:00	Eng + ls=0.02 + cosine_warmup lr=1.5e-4 60ep SWA from 40	success	0.300306	0.8600	0.9175	60	184.2	
+exp_125_ls02_cosine_wd3e4	2026-03-14T23:47:38.332509+00:00	Eng + ls=0.02 + cosine_warmup wd=3e-4 60ep SWA from 40	success	0.298560	0.8606	0.9185	60	183.5	
+exp_126_ls03_cosine60	2026-03-14T23:50:44.768205+00:00	Eng + ls=0.03 + cosine_warmup 60ep SWA from 40	success	0.300338	0.8626	0.9183	60	186.1	
+exp_127_ls02_cosine_ftd05	2026-03-14T23:53:48.987813+00:00	Eng + ls=0.02 + cosine_warmup ft_dropout=0.05 60ep SWA from 40	success	0.297698	0.8622	0.9190	60	183.8	
+exp_130_ls005_cosine60	2026-03-14T23:59:09.563525+00:00	Eng + ls=0.005 + cosine_warmup 60ep SWA from 40	success	0.298151	0.8618	0.9185	60	189.2	
+exp_131_ls01_cosine_ftd05	2026-03-15T00:02:05.984044+00:00	Eng + ls=0.01 + cosine_warmup + ft_dropout=0.05 60ep SWA40	success	0.298119	0.8614	0.9186	60	176.1	
+exp_132_ls01_cosine80	2026-03-15T00:06:09.830132+00:00	Eng + ls=0.01 + cosine_warmup 80ep SWA from 55	success	0.299673	0.8612	0.9183	80	243.5	
+exp_133_ls01_cosine_ftd15	2026-03-15T00:09:09.092132+00:00	Eng + ls=0.01 + cosine_warmup + ft_dropout=0.15 60ep SWA40	success	0.299300	0.8602	0.9180	60	178.9	
+exp_134_ls01_cosine_warm5	2026-03-15T00:12:14.662779+00:00	Eng + ls=0.01 + cosine_warmup warmup=5 60ep SWA40	success	0.297779	0.8610	0.9188	60	185.2	
+exp_135_ls01_cosine_wd5e5	2026-03-15T00:15:17.884870+00:00	Eng + ls=0.01 + cosine_warmup wd=5e-5 60ep SWA40	success	0.297603	0.8624	0.9188	60	182.8	
+exp_136_ls01_cosine_drop05	2026-03-15T00:18:20.601020+00:00	Eng + ls=0.01 + cosine_warmup dropout=0.05 60ep SWA40	success	0.298339	0.8602	0.9184	60	182.3	
+exp_137_ls01_cosine_swa30	2026-03-15T00:21:18.996783+00:00	Eng + ls=0.01 + cosine_warmup 60ep SWA from 30	success	0.297611	0.8616	0.9187	60	178.0	
+exp_140_seed123	2026-03-15T00:33:43.995185+00:00	Best config seed=123	success	0.301722	0.8614	0.9161	60	145.0	
+exp_141_seed789	2026-03-15T00:36:04.803487+00:00	Best config seed=789	success	0.301797	0.8591	0.9158	60	140.4	
+exp_142_periodic32	2026-03-15T00:38:42.216613+00:00	Best config + periodic k=32	success	0.301900	0.8616	0.9164	60	157.0	
+exp_143_periodic8	2026-03-15T00:41:43.961206+00:00	Best config + periodic k=8	success	0.300685	0.8622	0.9174	60	181.4	
+exp_144_mean_pool	2026-03-15T00:44:43.666667+00:00	Best config + mean pooling	success	0.297888	0.8610	0.9182	60	179.3	
+exp_145_wd5e5	2026-03-15T00:47:43.633939+00:00	Best config + wd=5e-5	success	0.297603	0.8624	0.9188	60	179.6	
+exp_146_8layers	2026-03-15T00:51:05.528689+00:00	Best config 8L d192	success	0.298874	0.8647	0.9179	60	201.5	
+exp_147_5seed_ensemble	2026-03-15T01:23:56.112844+00:00	5-seed ensemble ls=0.01 cosine 60ep SWA40	success	0.298922	0.8604	0.9177	60	1970.2	
+exp_150_mean_ls01_cosine	2026-03-15T01:33:02.735342+00:00	Eng + mean pooling + ls=0.01 + cosine 60ep SWA40	success	0.297888	0.8610	0.9182	60	386.6	
+exp_151_batch1024	2026-03-15T01:38:19.231464+00:00	Eng + batch=1024 lr=3e-4 ls=0.01 cosine 60ep SWA40	success	0.299009	0.8591	0.9176	60	316.1	
+exp_152_batch256	2026-03-15T01:49:59.628155+00:00	Eng + batch=256 lr=1.5e-4 ls=0.01 cosine 60ep SWA40	success	0.298515	0.8610	0.9183	60	697.8	
+exp_153_3heads	2026-03-15T01:57:04.274284+00:00	Eng + 3 heads ls=0.01 cosine 60ep SWA40	success	0.300333	0.8612	0.9173	60	418.9	
+exp_154_12heads	2026-03-15T02:04:04.422270+00:00	Eng + 12 heads ls=0.01 cosine 60ep SWA40	success	0.299629	0.8614	0.9181	60	419.7	
+exp_155_ff768	2026-03-15T02:10:57.628738+00:00	Eng + d_ff=768 ls=0.01 cosine 60ep SWA40	success	0.300390	0.8622	0.9174	60	412.8	
+exp_156_ff192	2026-03-15T02:17:32.587917+00:00	Eng + d_ff=192 ls=0.01 cosine 60ep SWA40	success	0.299577	0.8624	0.9175	60	390.9	
+exp_157_mean_b256_80ep	2026-03-15T02:33:13.468599+00:00	Eng + mean pool + batch=256 + ls=0.01 cosine 80ep SWA55	success	0.306390	0.8597	0.9141	80	940.5	

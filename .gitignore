@@ -7,3 +7,13 @@ data/raw/
 data/processed/
 
 .env
+
+# Output logs
+*_output.txt
+*_output*.txt
+
+# Corpus data (on HuggingFace)
+corpus/
+
+# Temporary cache files
+tmp_*.json
