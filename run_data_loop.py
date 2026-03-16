@@ -66,8 +66,8 @@ MAX_ROWS_PER_DATASET = 200_000
 MIN_ROWS = 50
 HF_DOWNLOAD_TIMEOUT = 60  # seconds per dataset
 HF_PARALLEL_FETCHES = 4  # concurrent HF downloads
-N_WORKERS = min(mp.cpu_count(), 12)  # cap at 12 for prep workers
-N_SYNTH_WORKERS = min(mp.cpu_count(), 8)
+N_WORKERS = min(mp.cpu_count(), 16)  # cap at 16 for prep workers
+N_SYNTH_WORKERS = min(mp.cpu_count(), 16)
 
 # ── Logging ───────────────────────────────────────────────────────────
 
@@ -156,6 +156,7 @@ def _discover_openml_safe(registry_file: str, output_root: str,
     )
     from tabula.data.autodiscovery import DiscoveryRegistry, DiscoveryRecord, _validate_raw_dir
     import urllib.request
+    import urllib.error
 
     registry = DiscoveryRegistry(registry_file)
     output = Path(output_root)
@@ -211,7 +212,7 @@ def _discover_openml_safe(registry_file: str, output_root: str,
             pass
 
     batch_size = 100  # datasets per API page
-    max_pages = 20    # scan up to 20 pages per round
+    max_pages = 50    # scan up to 50 pages per round
 
     for page in range(max_pages):
         if extra_count >= limit:
@@ -224,6 +225,10 @@ def _discover_openml_safe(registry_file: str, output_root: str,
             if not items:
                 offset = 0  # wrap around
                 break
+        except urllib.error.HTTPError as he:
+            if he.code == 412:  # past end of catalogue
+                offset = 0  # wrap to start
+            break
         except Exception:
             break
 
@@ -243,7 +248,7 @@ def _discover_openml_safe(registry_file: str, output_root: str,
                 qmap[qi.get("name", "")] = qi.get("value", "")
             n_inst = int(float(qmap.get("NumberOfInstances", 0)))
             n_feat = int(float(qmap.get("NumberOfFeatures", 0)))
-            if n_inst < 100 or n_inst > max_rows or n_feat < 2 or n_feat > 500:
+            if n_inst < 30 or n_inst > max_rows or n_feat < 2 or n_feat > 2000:
                 continue
 
             # Try to fetch
@@ -273,6 +278,37 @@ def _discover_openml_safe(registry_file: str, output_root: str,
     # Save offset for next round
     offset_file.parent.mkdir(parents=True, exist_ok=True)
     offset_file.write_text(str(offset))
+
+    # --- Retry previously failed OpenML datasets (transient errors) ---
+    if not records:
+        failed = registry.get_retryable("openml", max_retries=3)
+        retry_count = 0
+        for frec in failed[:20]:  # retry up to 20 per round
+            dataset_id = int(frec.get("external_ref", 0))
+            if dataset_id == 0:
+                continue
+            did = frec["dataset_id"]
+            raw_dir = output / did
+            status, error, n_rows, n_cols = "ok", "", 0, 0
+            try:
+                fetch_openml_dataset(
+                    dataset_id=dataset_id, output_root=output_root,
+                    local_dataset_id=did, max_rows=max_rows,
+                )
+                ok, error, n_rows, n_cols = _validate_raw_dir(raw_dir)
+                status = "ok" if ok else "schema_fail"
+            except Exception as exc:
+                status, error = "download_fail", str(exc)[:200]
+            registry.update_status(did, status, error)
+            if status == "ok":
+                records.append(DiscoveryRecord(
+                    dataset_id=did, source="openml", external_ref=str(dataset_id),
+                    task_type="unknown", n_rows=n_rows, n_cols=n_cols,
+                    status=status, raw_dir=str(raw_dir), notes=error,
+                ).__dict__)
+                retry_count += 1
+        if retry_count > 0:
+            print(f"  OpenML retries: {retry_count} recovered")
 
     return records
 
@@ -331,18 +367,26 @@ def _discover_hf_safe(registry_file: str, output_root: str,
     registry = DiscoveryRegistry(registry_file)
     records: list[dict] = []
 
-    categories = ["tabular-classification", "tabular-regression"]
+    # Search by category AND by keyword to find more datasets
+    searches: list[dict] = [
+        {"task_category": "tabular-classification", "limit": limit},
+        {"task_category": "tabular-regression", "limit": limit},
+        {"query": "tabular csv", "task_category": "", "limit": limit},
+        {"query": "classification csv", "task_category": "", "limit": limit},
+        {"query": "regression dataset", "task_category": "", "limit": limit},
+    ]
+
     seen: set[str] = set()
     all_results = []
-    for cat in categories:
+    for search_kwargs in searches:
         try:
-            results = search_huggingface_datasets(task_category=cat, limit=limit)
+            results = search_huggingface_datasets(**search_kwargs)
             for r in results:
                 if r.repo_id not in seen:
                     seen.add(r.repo_id)
                     all_results.append(r)
         except Exception as exc:
-            print(f"  [WARN] HF search failed for {cat}: {exc}")
+            pass  # fail silently, try next search
 
     # Build list of candidates not yet in registry
     candidates = []
@@ -950,7 +994,7 @@ def main():
 
             print(f"  Prep phase took {time.time()-t0:.0f}s")
 
-        # ── Phase 3: Parallel synthetic fill ──────────────────
+        # ── Phase 3: Synthetic fill (if shard has room) ─────────
         if shard_rows > 0 and shard_rows < ROWS_PER_SHARD:
             remaining = ROWS_PER_SHARD - shard_rows
             n_synth = max(10, min(80, remaining // 10_000))
@@ -974,28 +1018,11 @@ def main():
             print(f"  Synthetic: {len(synth_paths)} datasets in {time.time()-t0:.0f}s "
                   f"-- buf now {shard_rows:,} rows")
 
-            if shard_rows >= ROWS_PER_SHARD:
-                path, n = save_shard(shard_paths, shard_idx)
-                if path:
-                    size_mb = path.stat().st_size / (1024 * 1024)
-                    print(f"\n  >>> SHARD {shard_idx:05d}: {n:,} rows, "
-                          f"{shard_datasets} datasets, {size_mb:.0f} MB")
-                    log_entry({"type": "shard", "idx": shard_idx,
-                               "rows": n, "datasets": shard_datasets,
-                               "size_mb": round(size_mb, 1)})
-                    upload_shard(path)
-                    total_shards += 1
-                    shard_idx += 1
-                shard_paths = []
-                shard_rows = 0
-                shard_datasets = 0
-                gc.collect()
-
-        # If nothing new and shard is empty, pure synthetic shard
-        if not ok_records and shard_rows == 0:
-            print("\n--- No new real data -> generating full synthetic shard ---")
+        # If shard is still empty after prep, generate synthetic to fill it
+        if shard_rows == 0:
+            print("\n--- No real data in buffer -> generating full synthetic shard ---")
             t0 = time.time()
-            n_synth = 80
+            n_synth = 120
             synth_paths = generate_synthetic_parallel(n_synth, synthetic_seed)
             synthetic_seed += n_synth
             for p in synth_paths:
@@ -1011,6 +1038,25 @@ def main():
             print(f"  Generated {len(synth_paths)} synthetic datasets in "
                   f"{time.time()-t0:.0f}s -- {shard_rows:,} rows")
 
+        # ── Flush shard if buffer >= threshold (universal check) ──
+        if shard_rows >= ROWS_PER_SHARD:
+            path, n = save_shard(shard_paths, shard_idx)
+            if path:
+                size_mb = path.stat().st_size / (1024 * 1024)
+                print(f"\n  >>> SHARD {shard_idx:05d}: {n:,} rows, "
+                      f"{shard_datasets} datasets, {size_mb:.0f} MB")
+                log_entry({"type": "shard", "idx": shard_idx,
+                           "rows": n, "datasets": shard_datasets,
+                           "size_mb": round(size_mb, 1)})
+                upload_shard(path)
+                total_shards += 1
+                shard_idx += 1
+            shard_paths = []
+            shard_rows = 0
+            shard_datasets = 0
+            gc.collect()
+            cleanup_raw_data()
+
         print(f"\n  Round {round_num} done. Buf: {shard_rows:,}/{ROWS_PER_SHARD:,} rows, "
               f"{shard_datasets} datasets")
 
@@ -1019,4 +1065,14 @@ def main():
 
 if __name__ == "__main__":
     mp.set_start_method("fork", force=True)
-    main()
+    while True:
+        try:
+            main()
+        except KeyboardInterrupt:
+            print("\nInterrupted by user. Exiting.")
+            break
+        except Exception as exc:
+            print(f"\n[CRASH] Main loop crashed: {exc}")
+            traceback.print_exc()
+            print("Restarting in 30 seconds...")
+            time.sleep(30)

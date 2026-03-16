@@ -92,6 +92,33 @@ class DiscoveryRegistry:
     def ok_records(self) -> list[DiscoveryRecord]:
         return [r for r in self.records.values() if r.status == "ok"]
 
+    def get_retryable(self, source: str, max_retries: int = 3) -> list[dict]:
+        """Return records from *source* with transient failures (download_fail)."""
+        retryable = []
+        for r in self.records.values():
+            if r.source == source and r.status == "download_fail":
+                retry_count = int(r.notes.split("retry=")[-1]) if "retry=" in r.notes else 0
+                if retry_count < max_retries:
+                    retryable.append(asdict(r))
+        return retryable
+
+    def update_status(self, dataset_id: str, status: str, notes: str = "") -> None:
+        """Update status and notes for an existing record."""
+        if dataset_id in self.records:
+            rec = self.records[dataset_id]
+            old_retry = 0
+            if "retry=" in rec.notes:
+                try:
+                    old_retry = int(rec.notes.split("retry=")[-1])
+                except ValueError:
+                    pass
+            rec.status = status
+            if status != "ok":
+                rec.notes = f"{notes[:150]} retry={old_retry + 1}"
+            else:
+                rec.notes = notes
+            self.save()
+
     def __len__(self) -> int:
         return len(self.records)
 

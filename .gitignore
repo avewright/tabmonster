@@ -5,6 +5,8 @@ artifacts/
 .pytest_cache/
 data/raw/
 data/processed/
+data/raw_loop/
+data/processed_loop/
 
 .env
 
